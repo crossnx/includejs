@@ -1,0 +1,18 @@
+@PACKAGE_INIT@
+
+# Support both casing styles
+list(APPEND INCLUDEJS_COMPONENTS ${IncludeJS_FIND_COMPONENTS})
+list(APPEND INCLUDEJS_COMPONENTS ${includejs_FIND_COMPONENTS})
+if(NOT INCLUDEJS_COMPONENTS)
+  list(APPEND INCLUDEJS_COMPONENTS engine)
+endif()
+
+foreach(component ${JSONBINPACK_COMPONENTS})
+  if(component STREQUAL "engine")
+    include("${CMAKE_CURRENT_LIST_DIR}/sourcemeta_includejs_engine.cmake")
+  else()
+    message(FATAL_ERROR "Unknown IncludeJS component: ${component}")
+  endif()
+endforeach()
+
+check_required_components("@PROJECT_NAME@")
