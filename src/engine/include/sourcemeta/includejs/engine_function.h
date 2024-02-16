@@ -43,10 +43,17 @@ using Function = const void *(*)(const void *, const void *, const void *,
   }
 #endif
 
+#ifdef DOXYGEN
+/// @ingroup engine
+#define SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(function)
+/// @ingroup engine
+#define SOURCEMETA_INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)
+#else
 #define SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(function)                         \
   __SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function)
 #define SOURCEMETA_INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)                \
   template <typename... Args>                                                  \
   __SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function<Args...>)
+#endif
 
 #endif
