@@ -42,8 +42,21 @@ auto Context::make_error(const std::string &message) const -> Value {
 }
 
 auto Context::make_object() const -> Value {
-  return {this->internal->context,
-          JSObjectMake(this->internal->context, nullptr, nullptr)};
+  // Create a class definition to be able to set private data on the object.
+  JSClassDefinition class_def = kJSClassDefinitionEmpty;
+  class_def.finalize = [](JSObjectRef object) {
+    auto *function_ptr =
+        static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(object));
+    if (function_ptr != nullptr) {
+      delete function_ptr;
+    }
+  };
+  JSClassRef empty_class = JSClassCreate(&class_def);
+
+  auto res = JSObjectMake(this->internal->context, empty_class, nullptr);
+  JSClassRelease(empty_class);
+
+  return {this->internal->context, res};
 }
 
 auto Context::make_promise() const -> Promise {

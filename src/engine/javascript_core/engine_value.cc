@@ -152,6 +152,70 @@ auto Value::set(const std::string &property, Value value) -> void {
   assert(!exception);
 }
 
+auto Value::set(const std::string &name, Function cpp_function) -> void {
+  assert(is_object());
+
+  // Convert function name
+  JSStringRef function_name_ref = JSStringCreateWithUTF8CString(name.c_str());
+
+  // Create a callback for JavascriptCore
+  JSObjectCallAsFunctionCallback callback =
+      [](JSContextRef context_ref, JSObjectRef function_ref,
+         JSObjectRef this_object, size_t argc, const JSValueRef args[],
+         JSValueRef * /* *exception */) -> JSValueRef {
+    // First we need to retrieve the C++ function from the parent object.
+    auto *function_store =
+        static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(this_object));
+    assert(function_store != nullptr);
+    Function &retrieved_cpp_function = function_store->at(function_ref);
+
+    // Then, we create a vector of Value arguments.
+    std::vector<Value> arguments;
+    for (std::size_t index = 0; index < argc; index++) {
+      arguments.emplace_back(context_ref, args[index]);
+    }
+
+    // Finally we call the C++ function passing the arguments
+    // and return the result.
+    Value result = retrieved_cpp_function(std::move(arguments));
+    return static_cast<JSValueRef>(result.native());
+  };
+
+  // Convert callback JavascriptCore function
+  JSObjectRef function_obj_ref = JSObjectMakeFunctionWithCallback(
+      this->internal->context, function_name_ref, callback);
+  assert(function_obj_ref != nullptr);
+
+  // Get the parent object, where we will store the c++ function store.
+  JSValueRef exception = nullptr;
+  JSObjectRef parent_obj = JSValueToObject(this->internal->context,
+                                           this->internal->value, &exception);
+  assert(!exception);
+  assert(parent_obj != nullptr);
+
+  // Retrieve the existing function store from the parent object.
+  // If it doesn't exist, create a new one.
+  auto existing_function_store =
+      static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(parent_obj));
+  if (existing_function_store == nullptr) {
+    existing_function_store = new Value::FunctionStorage{};
+  }
+  existing_function_store->emplace(function_obj_ref, std::move(cpp_function));
+
+  // Store the cpp_function in a private field of the parent object
+  // so we can retrieve it later.
+  bool is_function_stored =
+      JSObjectSetPrivate(parent_obj, existing_function_store);
+  (void)is_function_stored; // Avoid unused variable warning (in release mode.)
+  assert(is_function_stored);
+
+  // Set the function in current object.
+  set(name, Value{this->internal->context, function_obj_ref});
+
+  // Release the function name.
+  JSStringRelease(function_name_ref);
+}
+
 auto Value::to_map() const -> std::map<std::string, Value> {
   assert(is_object());
   JSValueRef exception = nullptr;
