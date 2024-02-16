@@ -6,6 +6,8 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(vendor/noa/cmake/noa.cmake)
 include(cmake/CompilerOptions.cmake)
 
+# set(CMAKE_CXX_STANDARD 17)
+
 # Options
 option(INCLUDEJS_ENGINE "Build the IncludeJS engine library" ON)
 option(INCLUDEJS_TESTS "Build the IncludeJS tests" OFF)

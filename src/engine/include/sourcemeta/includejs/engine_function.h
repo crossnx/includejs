@@ -9,8 +9,19 @@
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
 #include <exception> // std::exception
 #include <vector>    // std::vector
-// For consumers to use
+#endif
+
+#ifdef DOXYGEN
+/// @ingroup engine
+#define SOURCEMETA_INCLUDEJS_ARGS
+#else
+#if __cplusplus >= 202002L
 #include <span> // std::span
+#define SOURCEMETA_INCLUDEJS_ARGS std::span<sourcemeta::includejs::Value>
+#else
+#define SOURCEMETA_INCLUDEJS_ARGS                                              \
+  const std::vector<sourcemeta::includejs::Value> &
+#endif
 #endif
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)

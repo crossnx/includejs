@@ -2,16 +2,15 @@
 
 #include <sourcemeta/includejs/engine.h>
 
-#include <span>
-
 static auto is_string(const sourcemeta::includejs::Context &context,
-                      std::span<sourcemeta::includejs::Value> arguments)
+                      SOURCEMETA_INCLUDEJS_ARGS arguments)
     -> sourcemeta::includejs::Value {
   return context.from(!arguments.empty() && arguments.front().is_string());
 }
 
+// TODO: Add overload that doesn't take arguments
 static auto get_details(const sourcemeta::includejs::Context &context,
-                        std::span<sourcemeta::includejs::Value>)
+                        SOURCEMETA_INCLUDEJS_ARGS)
     -> sourcemeta::includejs::Value {
   sourcemeta::includejs::Value result{context.make_object()};
   result.set("version", context.from("1.0.0"));
@@ -19,7 +18,7 @@ static auto get_details(const sourcemeta::includejs::Context &context,
 }
 
 static auto promise_test(const sourcemeta::includejs::Context &context,
-                         std::span<sourcemeta::includejs::Value>)
+                         SOURCEMETA_INCLUDEJS_ARGS)
     -> sourcemeta::includejs::Value {
   sourcemeta::includejs::Promise promise{context.make_promise()};
   promise.resolve(context.from(true));
