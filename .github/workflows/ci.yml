@@ -35,7 +35,17 @@ jobs:
             cxx: g++
             type: shared
 
-          # TODO: Build with sanitizers
+          # Sanitizers
+          - os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+            type: static
+            options: -DINCLUDEJS_ADDRESS_SANITIZER:BOOL=ON
+          - os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+            type: static
+            options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
 
     runs-on: ${{ matrix.platform.os }}
     env:
