@@ -6,7 +6,8 @@ extern "C" {
 
 #include <cassert> // assert
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 struct Context::Internal {
   JSContextRef context;
@@ -70,4 +71,5 @@ auto Context::global() const -> Value {
   return {this->internal->context, this->internal->global};
 }
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta

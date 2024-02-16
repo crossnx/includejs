@@ -20,7 +20,8 @@
 #include <string>           // std::string
 #include <vector>           // std::vector
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 /// @ingroup engine
 class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Engine {
@@ -53,6 +54,7 @@ private:
   auto on_error(const Value &exception) -> void;
 };
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 
 #endif

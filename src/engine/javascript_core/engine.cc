@@ -12,7 +12,8 @@ extern "C" {
 #include <utility>   // std::move
 #include <vector>    // std::vector
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 struct Engine::Internal {
   JSContextGroupRef group;
@@ -195,4 +196,5 @@ auto Engine::bind_global(std::initializer_list<std::string> location,
   }
 }
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta

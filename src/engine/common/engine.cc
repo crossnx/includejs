@@ -8,7 +8,8 @@
 #include <utility>   // std::move
 #include <vector>    // std::vector
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 // For convenience
 auto Engine::evaluate(std::ifstream &stream, const std::filesystem::path &path)
@@ -82,4 +83,5 @@ auto Engine::on_error(const Value &exception) -> void {
   throw Error(message->to_string(), std::move(stacktrace));
 }
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta

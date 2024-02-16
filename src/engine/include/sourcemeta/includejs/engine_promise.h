@@ -7,7 +7,8 @@
 
 #include <memory> // std::unique_ptr
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 /// @ingroup engine
 class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Promise {
@@ -27,6 +28,7 @@ private:
   bool completed{false};
 };
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 
 #endif

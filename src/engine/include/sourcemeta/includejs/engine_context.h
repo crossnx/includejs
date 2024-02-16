@@ -9,7 +9,8 @@
 #include <memory> // std::unique_ptr
 #include <string> // std::string
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 /// @ingroup engine
 class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Context {
@@ -36,6 +37,7 @@ private:
   std::unique_ptr<Internal> internal;
 };
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 
 #endif

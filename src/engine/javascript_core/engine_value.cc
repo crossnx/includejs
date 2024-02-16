@@ -10,7 +10,8 @@ extern "C" {
 #include <stdexcept> // std::runtime_error
 #include <vector>    // std::vector
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 struct Value::Internal {
   JSContextRef context;
@@ -186,4 +187,5 @@ auto Value::native() const -> const void * {
   return static_cast<const void *>(this->internal->value);
 }
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta

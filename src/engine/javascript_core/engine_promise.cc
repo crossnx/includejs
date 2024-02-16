@@ -6,7 +6,8 @@ extern "C" {
 
 #include <cassert> // assert
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 struct Promise::Internal {
   JSContextRef context;
@@ -52,4 +53,5 @@ auto Promise::value() -> Value {
   return {this->internal->context, this->internal->promise};
 }
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta

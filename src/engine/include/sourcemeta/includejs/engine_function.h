@@ -25,13 +25,15 @@
 #endif
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 // This is a opaque function signature that can be force-casted into
 // JSObjectCallAsFunctionCallback
 /// @ingroup engine
 using Function = const void *(*)(const void *, const void *, const void *,
                                  const size_t, const void *[], const void **);
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 #endif
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)

@@ -9,7 +9,8 @@
 #include <string>     // std::string
 #include <vector>     // std::vector
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 /// @ingroup engine
 struct SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Frame {
@@ -35,6 +36,7 @@ private:
   const FrameContainer stacktrace;
 };
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 
 #endif

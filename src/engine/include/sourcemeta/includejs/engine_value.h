@@ -8,7 +8,8 @@
 #include <optional> // std::optional
 #include <string>   // std::string
 
-namespace sourcemeta::includejs {
+namespace sourcemeta {
+namespace includejs {
 
 // Inspired by https://github.com/sourcemeta/jsontoolkit
 /// @ingroup engine
@@ -45,6 +46,7 @@ private:
   std::unique_ptr<Internal> internal;
 };
 
-} // namespace sourcemeta::includejs
+} // namespace includejs
+} // namespace sourcemeta
 
 #endif
