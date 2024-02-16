@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>logo@2x</title>
+    <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <rect id="Rectangle" fill="#3C5CFF" x="0" y="0" width="512" height="512"></rect>
+            <text id="#include" font-family="Monospace821W26-Hebrew" font-size="80" font-weight="normal" fill="#A5C1FF">
+                <tspan x="63.34375" y="121">#include</tspan>
+            </text>
+            <text id="&lt;" font-family="Monospace821W26-Hebrew" font-size="85" font-weight="normal" fill="#A5C1FF">
+                <tspan x="62.4128418" y="318">&lt;</tspan>
+            </text>
+            <text id="&gt;" font-family="Monospace821W26-Hebrew" font-size="85" font-weight="normal" fill="#A5C1FF">
+                <tspan x="398.412842" y="318">&gt;</tspan>
+            </text>
+            <text id="JS" font-family="Rockwell-Regular, Rockwell" font-size="280" font-weight="normal" fill="#FFFFFF">
+                <tspan x="128" y="377">JS</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
