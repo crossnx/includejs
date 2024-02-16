@@ -14,6 +14,10 @@ jobs:
             cc: clang
             cxx: clang++
             type: static
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+            type: shared
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
@@ -22,6 +26,14 @@ jobs:
             cc: gcc
             cxx: g++
             type: static
+          - os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+            type: shared
+          - os: ubuntu-latest
+            cc: gcc
+            cxx: g++
+            type: shared
 
           # TODO: Build with sanitizers
 
