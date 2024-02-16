@@ -39,5 +39,19 @@ doxygen: .always
 clean: .always
 	$(CMAKE) -E rm -R -f build
 
+# TODO: For testing purposes
+webkit: .always
+	rm -rf build
+	mkdir -p build
+	cd build && cmake ../vendor/webkit -G Ninja \
+		-DPORT="JSCOnly" \
+		-DDEVELOPER_MODE:BOOL=OFF \
+		-DENABLE_FTL_JIT:BOOL=ON \
+		-DENABLE_STATIC_JSC:BOOL=ON \
+		-DUSE_SYSTEM_MALLOC:BOOL=ON \
+		-DUSE_APPLE_ICU:BOOL=ON \
+		-DCMAKE_BUILD_TYPE:STRING=$(PRESET)
+	$(CMAKE) --build ./build --config $(PRESET) --parallel 4
+
 # For NMake, which doesn't support .PHONY
 .always:
