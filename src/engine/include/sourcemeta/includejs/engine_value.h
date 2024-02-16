@@ -6,6 +6,7 @@
 #include <map>      // std::map
 #include <memory>   // std::unique_ptr
 #include <optional> // std::optional
+#include <span>     // std::span
 #include <string>   // std::string
 
 namespace sourcemeta::includejs {
@@ -19,6 +20,9 @@ public:
   Value(Value &&other) noexcept;
   Value(const Value &other) = delete;
 
+  using Function = std::function<Value(std::span<Value> arguments)>;
+  using FunctionStorage = std::unordered_map<void *, Value::Function>;
+
   auto is_number() const -> bool;
   auto is_string() const -> bool;
   auto is_error() const -> bool;
@@ -29,6 +33,7 @@ public:
   auto to_boolean() const -> bool;
   auto at(const std::string &property) const -> std::optional<Value>;
   auto set(const std::string &property, Value value) -> void;
+  auto set(const std::string &property, Function function) -> void;
   auto to_map() const -> std::map<std::string, Value>;
   auto native() const -> const void *;
 
