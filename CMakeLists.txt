@@ -33,7 +33,6 @@ install(FILES
   COMPONENT sourcemeta_includejs_dev)
 
 if(INCLUDEJS_ENGINE)
-  find_package(JavaScriptCore REQUIRED)
   add_subdirectory(src/engine)
 endif()
 
@@ -65,5 +64,11 @@ if(INCLUDEJS_TESTS)
     add_subdirectory(test/engine)
   endif()
 
-  # TODO: Add packaging tests
+  if(PROJECT_IS_TOP_LEVEL)
+    # Otherwise we need the child project to link
+    # against the sanitizers too.
+    if(NOT INCLUDEJS_ADDRESS_SANITIZER AND NOT INCLUDEJS_UNDEFINED_SANITIZER)
+      add_subdirectory(test/packaging)
+    endif()
+  endif()
 endif()

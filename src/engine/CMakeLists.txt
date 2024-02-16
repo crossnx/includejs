@@ -15,6 +15,8 @@ if(INCLUDEJS_INSTALL)
 endif()
 
 sourcemeta_includejs_add_compile_options(sourcemeta_includejs_engine)
+
+find_package(JavaScriptCore REQUIRED)
 target_link_libraries(sourcemeta_includejs_engine
   PRIVATE JavaScriptCore::JavaScriptCore)
 target_compile_definitions(sourcemeta_includejs_engine
