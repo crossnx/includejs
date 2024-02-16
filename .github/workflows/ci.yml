@@ -18,6 +18,10 @@ jobs:
             cc: clang
             cxx: clang++
             type: static
+          - os: ubuntu-latest
+            cc: gcc
+            cxx: g++
+            type: static
 
           # TODO: Build with sanitizers
 
