@@ -96,7 +96,6 @@ static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
   JSValueRef exception = nullptr;
   JSStringRef copy = JSValueToStringCopy(context, value, &exception);
   assert(!exception);
-  JSStringRetain(copy);
   try {
     std::string result{js_string_to_std_string(copy)};
     JSStringRelease(copy);
