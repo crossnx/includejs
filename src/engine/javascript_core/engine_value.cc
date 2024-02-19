@@ -96,7 +96,7 @@ static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
   JSValueRef exception = nullptr;
   JSStringRef copy = JSValueToStringCopy(context, value, &exception);
   assert(!exception);
-  JSStringRetain(copy);
+
   try {
     std::string result{js_string_to_std_string(copy)};
     JSStringRelease(copy);
@@ -127,6 +127,7 @@ auto Value::at(const std::string &property) const -> std::optional<Value> {
 
   JSStringRef property_string = JSStringCreateWithUTF8CString(property.c_str());
   if (!JSObjectHasProperty(this->internal->context, object, property_string)) {
+    JSStringRelease(property_string);
     return std::nullopt;
   }
 
