@@ -9,31 +9,36 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          # TODO: Build on more platforms
           - os: macos-latest
             cc: clang
             cxx: clang++
             type: static
+            backend: JavaScriptCore
           - os: macos-latest
             cc: clang
             cxx: clang++
             type: shared
+            backend: JavaScriptCore
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: static
+            backend: JavaScriptCore
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: static
+            backend: JavaScriptCore
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: shared
+            backend: JavaScriptCore
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: shared
+            backend: JavaScriptCore
 
           # Sanitizers
           - os: ubuntu-latest
@@ -41,11 +46,13 @@ jobs:
             cxx: clang++
             type: static
             options: -DINCLUDEJS_ADDRESS_SANITIZER:BOOL=ON
+            backend: JavaScriptCore
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: static
             options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
+            backend: JavaScriptCore
 
     runs-on: ${{ matrix.platform.os }}
     env:
@@ -78,7 +85,7 @@ jobs:
         run: >
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
-          -DINCLUDEJS_BACKEND:STRING=JavaScriptCore
+          -DINCLUDEJS_BACKEND:STRING=${{ matrix.platform.backend }}
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -89,7 +96,7 @@ jobs:
         run: >
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
-          -DINCLUDEJS_BACKEND:STRING=JavaScriptCore
+          -DINCLUDEJS_BACKEND:STRING=${{ matrix.platform.backend }}
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=ON
