@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 #include <cassert>   // assert
 #include <fstream>   // std::ifstream

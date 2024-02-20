@@ -3,7 +3,7 @@
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_value.h>
 
 #include <memory> // std::unique_ptr
 
@@ -11,7 +11,7 @@ namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Promise {
+class INCLUDEJS_ENGINE_EXPORT Promise {
 public:
   // Consumers are not meant to create this class directly
 #ifndef DOXYGEN

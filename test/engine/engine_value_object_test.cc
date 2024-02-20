@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 // TODO(tonygo): Add tests for each kind of type
 TEST(IncludeJS_Engine, set_object_property) {

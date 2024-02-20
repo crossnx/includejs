@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine_error.h>
+#include <includejs/engine_error.h>
 
 #include <iterator> // std::cbegin, std::cend
 #include <utility>  // std::move

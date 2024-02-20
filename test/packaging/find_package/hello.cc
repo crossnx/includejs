@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 #include <cassert>  // EXIT_SUCCESS
 #include <cstdlib>  // EXIT_SUCCESS

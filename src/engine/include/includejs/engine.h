@@ -6,10 +6,10 @@
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_context.h>
-#include <sourcemeta/includejs/engine_error.h>
-#include <sourcemeta/includejs/engine_function.h>
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_context.h>
+#include <includejs/engine_error.h>
+#include <includejs/engine_function.h>
+#include <includejs/engine_value.h>
 
 #include <filesystem>       // std::filesystem::path
 #include <initializer_list> // std::initializer_list
@@ -24,7 +24,7 @@ namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Engine {
+class INCLUDEJS_ENGINE_EXPORT Engine {
 public:
   Engine();
   ~Engine();

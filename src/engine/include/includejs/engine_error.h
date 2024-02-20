@@ -13,7 +13,7 @@ namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-struct SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Frame {
+struct INCLUDEJS_ENGINE_EXPORT Frame {
   const std::optional<std::string> scope;
   const std::optional<std::filesystem::path> path;
   const unsigned long long line;
@@ -21,7 +21,7 @@ struct SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Frame {
 };
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Error : public std::exception {
+class INCLUDEJS_ENGINE_EXPORT Error : public std::exception {
 private:
   using FrameContainer = std::vector<Frame>;
 

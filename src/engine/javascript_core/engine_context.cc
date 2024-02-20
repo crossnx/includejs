@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine_context.h>
+#include <includejs/engine_context.h>
 
 extern "C" {
 #include <JavaScriptCore/JavaScript.h>
