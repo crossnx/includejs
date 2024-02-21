@@ -75,6 +75,7 @@ if (WIN32)
         endif ()
     endif ()
 
+    message(STATUS "XXXXXX ${WEBKIT_LIBRARIES_DIR}")
     set(CMAKE_PREFIX_PATH ${WEBKIT_LIBRARIES_DIR})
 
     if (WTF_CPU_X86_64)
