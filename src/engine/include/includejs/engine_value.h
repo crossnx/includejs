@@ -15,7 +15,7 @@ namespace includejs {
 
 // Inspired by https://github.com/sourcemeta/jsontoolkit
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Value {
+class INCLUDEJS_ENGINE_EXPORT Value {
 public:
   // Consumers are not meant to create this class directly
 #ifndef DOXYGEN

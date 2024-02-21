@@ -3,8 +3,8 @@
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_context.h>
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_context.h>
+#include <includejs/engine_value.h>
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
 #include <exception> // std::exception

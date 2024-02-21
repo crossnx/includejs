@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 TEST(IncludeJS_Engine, evaluate_result_integer) {
   sourcemeta::includejs::Engine engine;

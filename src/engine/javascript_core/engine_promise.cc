@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine_promise.h>
+#include <includejs/engine_promise.h>
 
 extern "C" {
 #include <JavaScriptCore/JavaScript.h>

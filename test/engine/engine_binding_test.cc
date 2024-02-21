@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 static auto is_string(const sourcemeta::includejs::Context &context,
                       SOURCEMETA_INCLUDEJS_ARGS arguments)
