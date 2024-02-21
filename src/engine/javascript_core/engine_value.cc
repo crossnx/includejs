@@ -269,12 +269,14 @@ auto Value::to_vector() const -> std::vector<Value> {
   assert(object == this->internal->value);
 
   std::vector<Value> vector;
-  const double length = JSValueToNumber(
-      this->internal->context,
-      JSObjectGetProperty(this->internal->context, object,
-                          JSStringCreateWithUTF8CString("length"), &exception),
-      &exception);
+  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
+  const double length =
+      JSValueToNumber(this->internal->context,
+                      JSObjectGetProperty(this->internal->context, object,
+                                          length_string, &exception),
+                      &exception);
   assert(!exception);
+  JSStringRelease(length_string);
   for (unsigned int index = 0; index < static_cast<std::size_t>(length);
        index++) {
     JSValueRef value = JSObjectGetPropertyAtIndex(this->internal->context,
@@ -298,12 +300,14 @@ auto Value::at(const unsigned int &position) const -> std::optional<Value> {
   assert(!exception);
   assert(object == this->internal->value);
 
-  const double length = JSValueToNumber(
-      this->internal->context,
-      JSObjectGetProperty(this->internal->context, object,
-                          JSStringCreateWithUTF8CString("length"), &exception),
-      &exception);
+  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
+  const double length =
+      JSValueToNumber(this->internal->context,
+                      JSObjectGetProperty(this->internal->context, object,
+                                          length_string, &exception),
+                      &exception);
   assert(!exception);
+  JSStringRelease(length_string);
   if (position >= static_cast<std::size_t>(length)) {
     return std::nullopt;
   }
@@ -322,10 +326,11 @@ auto Value::push(Value value) -> void {
   assert(!exception);
   assert(object == this->internal->value);
 
-  JSValueRef length_property =
-      JSObjectGetProperty(this->internal->context, object,
-                          JSStringCreateWithUTF8CString("length"), &exception);
+  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
+  JSValueRef length_property = JSObjectGetProperty(
+      this->internal->context, object, length_string, &exception);
   assert(!exception);
+  JSStringRelease(length_string);
 
   const double length =
       JSValueToNumber(this->internal->context, length_property, &exception);
