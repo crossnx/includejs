@@ -15,5 +15,3 @@ jobs:
       - run: Expand-Archive -Force WebKitRequirementsWin64.zip build/WebKitLibraries
       - run: ls build/WebKitLibraries
       - run: nmake webkit
-        env:
-          WEBKIT_LIBRARIES: /D/a/includejs/includejs/build/WebKitLibraries
