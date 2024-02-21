@@ -59,6 +59,18 @@ static auto get_current_object(JSContextRef context, JSValueRef value)
   return object;
 }
 
+static auto get_object_length(JSContextRef context, JSObjectRef object)
+    -> std::size_t {
+  JSValueRef exception = nullptr;
+  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
+  const double length = JSValueToNumber(
+      context, JSObjectGetProperty(context, object, length_string, &exception),
+      &exception);
+  assert(!exception);
+  JSStringRelease(length_string);
+  return static_cast<std::size_t>(length);
+}
+
 Value::Value(const void *context, const void *value)
     : internal{std::make_unique<Value::Internal>()} {
   this->internal->context = static_cast<JSContextRef>(context);
@@ -273,17 +285,10 @@ auto Value::to_vector() const -> std::vector<Value> {
   assert(is_array());
   JSObjectRef object =
       get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
 
-  std::vector<Value> vector;
   JSValueRef exception = nullptr;
-  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
-  const double length =
-      JSValueToNumber(this->internal->context,
-                      JSObjectGetProperty(this->internal->context, object,
-                                          length_string, &exception),
-                      &exception);
-  assert(!exception);
-  JSStringRelease(length_string);
+  std::vector<Value> vector;
   for (unsigned int index = 0; index < static_cast<std::size_t>(length);
        index++) {
     JSValueRef value = JSObjectGetPropertyAtIndex(this->internal->context,
@@ -303,20 +308,13 @@ auto Value::at(const unsigned int &position) const -> std::optional<Value> {
   assert(is_array());
   JSObjectRef object =
       get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
 
-  JSValueRef exception = nullptr;
-  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
-  const double length =
-      JSValueToNumber(this->internal->context,
-                      JSObjectGetProperty(this->internal->context, object,
-                                          length_string, &exception),
-                      &exception);
-  assert(!exception);
-  JSStringRelease(length_string);
   if (position >= static_cast<std::size_t>(length)) {
     return std::nullopt;
   }
 
+  JSValueRef exception = nullptr;
   JSValueRef result = JSObjectGetPropertyAtIndex(this->internal->context,
                                                  object, position, &exception);
   assert(!exception);
@@ -327,18 +325,9 @@ auto Value::push(Value value) -> void {
   assert(is_array());
   JSObjectRef object =
       get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
 
   JSValueRef exception = nullptr;
-  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
-  JSValueRef length_property = JSObjectGetProperty(
-      this->internal->context, object, length_string, &exception);
-  assert(!exception);
-  JSStringRelease(length_string);
-
-  const double length =
-      JSValueToNumber(this->internal->context, length_property, &exception);
-  assert(!exception);
-
   JSObjectSetPropertyAtIndex(
       this->internal->context, object, static_cast<unsigned int>(length),
       static_cast<JSValueRef>(value.native()), &exception);
