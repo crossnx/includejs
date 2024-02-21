@@ -41,9 +41,9 @@ clean: .always
 
 # TODO: For testing purposes
 webkit: .always
-	rm -rf build
-	mkdir -p build
-	cd build && cmake ../vendor/webkit -G Ninja \
+	$(CMAKE) -E rm -R -f build
+	$(CMAKE) -E make_directory build
+	cd build && $(CMAKE) ../vendor/webkit -G Ninja \
 		-DPORT="JSCOnly" \
 		-DDEVELOPER_MODE:BOOL=OFF \
 		-DENABLE_FTL_JIT:BOOL=ON \
