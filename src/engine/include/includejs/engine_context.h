@@ -21,6 +21,7 @@ public:
   ~Context();
 #endif
   auto make_undefined() const -> Value;
+  auto make_null() const -> Value;
   auto make_error(const std::string &message) const -> Value;
   auto make_object() const -> Value;
   auto make_promise() const -> Promise;

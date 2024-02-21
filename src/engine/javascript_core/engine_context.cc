@@ -29,6 +29,10 @@ auto Context::make_undefined() const -> Value {
           JSValueMakeUndefined(this->internal->context)};
 }
 
+auto Context::make_null() const -> Value {
+  return {this->internal->context, JSValueMakeNull(this->internal->context)};
+}
+
 auto Context::make_error(const std::string &message) const -> Value {
   JSStringRef message_value = JSStringCreateWithUTF8CString(message.c_str());
   JSValueRef error_arguments[]{
