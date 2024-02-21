@@ -30,7 +30,7 @@ lint: .always
 	$(CMAKE) --build ./build --config $(PRESET) --target clang_tidy
 
 test: .always
-	$(CMAKE) -E env UBSAN_OPTIONS=print_stacktrace=1 \
+	$(CMAKE) -E env UBSAN_OPTIONS=suppressions=../../../sanitizer-ignorelist.txt,print_stacktrace=1 \
 		$(CTEST) --test-dir ./build --build-config $(PRESET) \
 			--output-on-failure --progress --parallel
 
