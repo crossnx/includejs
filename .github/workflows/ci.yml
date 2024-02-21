@@ -16,4 +16,4 @@ jobs:
       - run: ls build/WebKitLibraries
       - run: nmake webkit
         env:
-          WEBKIT_LIBRARIES: D:/a/includejs/includejs/build/WebKitLibraries
+          WEBKIT_LIBRARIES: /D/a/includejs/includejs/build/WebKitLibraries
