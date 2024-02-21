@@ -16,9 +16,17 @@ noa_library(PROJECT includejs NAME engine
   FOLDER "IncludeJS/Engine"
   PRIVATE_HEADERS context.h function.h error.h promise.h value.h
   SOURCES ${INCLUDEJS_ENGINE_SOURCES})
+
 if(INCLUDEJS_INSTALL)
   noa_library_install(PROJECT includejs NAME engine)
+  if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")
+    install(FILES
+      "${PROJECT_SOURCE_DIR}/cmake/FindJavaScriptCore.cmake"
+      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/includejs"
+      COMPONENT includejs_dev)
+  endif()
 endif()
+
 sourcemeta_includejs_add_compile_options(includejs_engine)
 
 if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")

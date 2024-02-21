@@ -7,6 +7,8 @@ if(NOT INCLUDEJS_COMPONENTS)
   list(APPEND INCLUDEJS_COMPONENTS engine)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
 foreach(component ${INCLUDEJS_COMPONENTS})
   if(component STREQUAL "engine")
     include(CMakeFindDependencyMacro)
