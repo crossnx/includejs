@@ -10,4 +10,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: cmake --version
       - uses: ilammy/msvc-dev-cmd@v1
+      - run: curl -L --output WebKitRequirementsWin64.zip https://github.com/WebKitForWindows/WebKitRequirements/releases/download/v2024.02.05/WebKitRequirementsWin64.zip
+      - run: mkdir build
+      - run: Expand-Archive -Force WebKitRequirementsWin64.zip build/WebKitLibraries
       - run: nmake webkit
