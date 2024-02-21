@@ -35,6 +35,7 @@ public:
   auto is_object() const -> bool;
   auto is_boolean() const -> bool;
   auto is_undefined() const -> bool;
+  auto is_null() const -> bool;
   auto to_number() const -> double;
   auto to_string() const -> std::string;
   auto to_boolean() const -> bool;

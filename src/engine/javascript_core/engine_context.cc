@@ -80,6 +80,10 @@ auto Context::from(const char *value) const -> Value {
   return {this->internal->context, result};
 }
 
+auto Context::from(std::nullptr_t) const -> Value {
+  return {this->internal->context, JSValueMakeNull(this->internal->context)};
+}
+
 auto Context::global() const -> Value {
   return {this->internal->context, this->internal->global};
 }

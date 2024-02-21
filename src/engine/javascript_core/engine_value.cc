@@ -70,6 +70,10 @@ auto Value::is_boolean() const -> bool {
   return JSValueIsBoolean(this->internal->context, this->internal->value);
 }
 
+auto Value::is_null() const -> bool {
+  return JSValueIsNull(this->internal->context, this->internal->value);
+}
+
 auto Value::to_number() const -> double {
   assert(is_number());
   JSValueRef exception = nullptr;
