@@ -18,6 +18,47 @@ struct Value::Internal {
   JSValueRef value;
 };
 
+static auto js_string_to_std_string(JSStringRef value) -> std::string {
+  // JavaScriptCore doesn't have a function to fetch the UTF-8 byte size
+  // of a given string. It can only give us the amount of Unicode code-points
+  // in the string, which may be more than the bytes required to store it.
+  // As a consequence, we can't do much than allocating the maximum possible
+  // buffer to hold the string.
+  const size_t max_size = JSStringGetMaximumUTF8CStringSize(value);
+  std::vector<char> buffer(max_size);
+  // Converts a JavaScript string into a null-terminated UTF-8 string,
+  // and copies the result into an external byte buffer.
+  JSStringGetUTF8CString(value, buffer.data(), max_size);
+  return {buffer.data()};
+}
+
+// Converting a value into a string first requires copying
+// the value reference into a string reference.
+static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
+    -> std::string {
+  JSValueRef exception = nullptr;
+  JSStringRef copy = JSValueToStringCopy(context, value, &exception);
+  assert(!exception);
+
+  try {
+    std::string result{js_string_to_std_string(copy)};
+    JSStringRelease(copy);
+    return result;
+  } catch (const std::exception &) {
+    JSStringRelease(copy);
+    throw;
+  }
+}
+
+static auto get_current_object(JSContextRef context, JSValueRef value)
+    -> JSObjectRef {
+  JSValueRef exception = nullptr;
+  JSObjectRef object = JSValueToObject(context, value, &exception);
+  assert(!exception);
+  assert(object == value);
+  return object;
+}
+
 Value::Value(const void *context, const void *value)
     : internal{std::make_unique<Value::Internal>()} {
   this->internal->context = static_cast<JSContextRef>(context);
@@ -85,47 +126,6 @@ auto Value::to_number() const -> double {
                                       this->internal->value, &exception);
   assert(!exception);
   return result;
-}
-
-static auto js_string_to_std_string(JSStringRef value) -> std::string {
-  // JavaScriptCore doesn't have a function to fetch the UTF-8 byte size
-  // of a given string. It can only give us the amount of Unicode code-points
-  // in the string, which may be more than the bytes required to store it.
-  // As a consequence, we can't do much than allocating the maximum possible
-  // buffer to hold the string.
-  const size_t max_size = JSStringGetMaximumUTF8CStringSize(value);
-  std::vector<char> buffer(max_size);
-  // Converts a JavaScript string into a null-terminated UTF-8 string,
-  // and copies the result into an external byte buffer.
-  JSStringGetUTF8CString(value, buffer.data(), max_size);
-  return {buffer.data()};
-}
-
-// Converting a value into a string first requires copying
-// the value reference into a string reference.
-static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
-    -> std::string {
-  JSValueRef exception = nullptr;
-  JSStringRef copy = JSValueToStringCopy(context, value, &exception);
-  assert(!exception);
-
-  try {
-    std::string result{js_string_to_std_string(copy)};
-    JSStringRelease(copy);
-    return result;
-  } catch (const std::exception &) {
-    JSStringRelease(copy);
-    throw;
-  }
-}
-
-static auto get_current_object(JSContextRef context, JSValueRef value)
-    -> JSObjectRef {
-  JSValueRef exception = nullptr;
-  JSObjectRef object = JSValueToObject(context, value, &exception);
-  assert(!exception);
-  assert(object == value);
-  return object;
 }
 
 auto Value::to_string() const -> std::string {
