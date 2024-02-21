@@ -38,6 +38,10 @@ auto Value::is_string() const -> bool {
   return JSValueIsString(this->internal->context, this->internal->value);
 }
 
+auto Value::is_undefined() const -> bool {
+  return JSValueIsUndefined(this->internal->context, this->internal->value);
+}
+
 auto Value::is_error() const -> bool {
   JSObjectRef global = JSContextGetGlobalObject(this->internal->context);
   JSStringRef class_name = JSStringCreateWithUTF8CString("Error");
