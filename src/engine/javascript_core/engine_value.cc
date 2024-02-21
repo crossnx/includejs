@@ -119,6 +119,15 @@ static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
   }
 }
 
+static auto get_current_object(JSContextRef context, JSValueRef value)
+    -> JSObjectRef {
+  JSValueRef exception = nullptr;
+  JSObjectRef object = JSValueToObject(context, value, &exception);
+  assert(!exception);
+  assert(object == value);
+  return object;
+}
+
 auto Value::to_string() const -> std::string {
   assert(is_string());
   return js_value_to_std_string(this->internal->context, this->internal->value);
@@ -262,13 +271,11 @@ auto Value::to_map() const -> std::map<std::string, Value> {
 
 auto Value::to_vector() const -> std::vector<Value> {
   assert(is_array());
-  JSValueRef exception = nullptr;
-  JSObjectRef object = JSValueToObject(this->internal->context,
-                                       this->internal->value, &exception);
-  assert(!exception);
-  assert(object == this->internal->value);
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
 
   std::vector<Value> vector;
+  JSValueRef exception = nullptr;
   JSStringRef length_string = JSStringCreateWithUTF8CString("length");
   const double length =
       JSValueToNumber(this->internal->context,
@@ -294,12 +301,10 @@ auto Value::to_vector() const -> std::vector<Value> {
 
 auto Value::at(const unsigned int &position) const -> std::optional<Value> {
   assert(is_array());
-  JSValueRef exception = nullptr;
-  JSObjectRef object = JSValueToObject(this->internal->context,
-                                       this->internal->value, &exception);
-  assert(!exception);
-  assert(object == this->internal->value);
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
 
+  JSValueRef exception = nullptr;
   JSStringRef length_string = JSStringCreateWithUTF8CString("length");
   const double length =
       JSValueToNumber(this->internal->context,
@@ -320,12 +325,10 @@ auto Value::at(const unsigned int &position) const -> std::optional<Value> {
 
 auto Value::push(Value value) -> void {
   assert(is_array());
-  JSValueRef exception = nullptr;
-  JSObjectRef object = JSValueToObject(this->internal->context,
-                                       this->internal->value, &exception);
-  assert(!exception);
-  assert(object == this->internal->value);
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
 
+  JSValueRef exception = nullptr;
   JSStringRef length_string = JSStringCreateWithUTF8CString("length");
   JSValueRef length_property = JSObjectGetProperty(
       this->internal->context, object, length_string, &exception);
