@@ -59,6 +59,11 @@ auto Context::make_object() const -> Value {
   return {this->internal->context, res};
 }
 
+auto Context::make_array() const -> Value {
+  return {this->internal->context,
+          JSObjectMakeArray(this->internal->context, 0, nullptr, nullptr)};
+}
+
 auto Context::make_promise() const -> Promise {
   return {static_cast<const void *>(this->internal->context)};
 }

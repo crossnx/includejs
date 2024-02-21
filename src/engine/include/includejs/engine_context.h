@@ -24,6 +24,7 @@ public:
   auto make_error(const std::string &message) const -> Value;
   auto make_object() const -> Value;
   auto make_promise() const -> Promise;
+  auto make_array() const -> Value;
   auto from(const std::string &value) const -> Value;
   auto from(const char *) const -> Value;
   auto from(int value) const -> Value;

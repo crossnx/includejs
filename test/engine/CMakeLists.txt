@@ -3,6 +3,7 @@ add_executable(includejs_engine_unit
   engine_evaluate_test.cc
   engine_stacktraces_test.cc
   engine_value_object_test.cc
+  engine_value_array_test.cc
   engine_value_undefined_test.cc
   engine_value_null_test.cc)
 
