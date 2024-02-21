@@ -5,7 +5,7 @@
 TEST(IncludeJS_Engine, create_null) {
   sourcemeta::includejs::Engine engine;
 
-  auto null = engine.context().make_null();
+  auto null = engine.context().from(nullptr);
   EXPECT_TRUE(null.is_null());
 }
 
