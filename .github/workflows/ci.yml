@@ -78,7 +78,7 @@ jobs:
         run: >
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
-          -DINCLUDE_BACKEND:STRING=JavaScriptCore
+          -DINCLUDEJS_BACKEND:STRING=JavaScriptCore
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -89,7 +89,7 @@ jobs:
         run: >
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
-          -DINCLUDE_BACKEND:STRING=JavaScriptCore
+          -DINCLUDEJS_BACKEND:STRING=JavaScriptCore
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=ON
