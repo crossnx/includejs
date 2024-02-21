@@ -2,7 +2,8 @@ add_executable(includejs_engine_unit
   engine_binding_test.cc
   engine_evaluate_test.cc
   engine_stacktraces_test.cc
-  engine_value_object_test.cc)
+  engine_value_object_test.cc
+  engine_value_undefined_test.cc)
 
 sourcemeta_includejs_add_compile_options(includejs_engine_unit)
 
