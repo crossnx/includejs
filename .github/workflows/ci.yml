@@ -9,4 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: cmake --version
+      - uses: ilammy/msvc-dev-cmd@v1
       - run: nmake webkit
