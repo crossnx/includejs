@@ -45,6 +45,7 @@ webkit: .always
 	$(CMAKE) -E make_directory build
 	cd build && $(CMAKE) ../vendor/webkit -G Ninja \
 		-DPORT="JSCOnly" \
+		-DENABLE_TOOLS:BOOL=OFF \
 		-DDEVELOPER_MODE:BOOL=OFF \
 		-DENABLE_FTL_JIT:BOOL=ON \
 		-DENABLE_STATIC_JSC:BOOL=ON \
