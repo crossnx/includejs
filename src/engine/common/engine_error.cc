@@ -3,7 +3,6 @@
 #include <iterator> // std::cbegin, std::cend
 #include <utility>  // std::move
 
-namespace sourcemeta {
 namespace includejs {
 
 Error::Error(std::string &&new_message, FrameContainer &&new_stacktrace)
@@ -22,4 +21,3 @@ auto Error::end() const -> FrameContainer::const_iterator {
 }
 
 } // namespace includejs
-} // namespace sourcemeta

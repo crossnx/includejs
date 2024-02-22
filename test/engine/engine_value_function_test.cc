@@ -3,7 +3,7 @@
 #include <includejs/engine.h>
 
 TEST(IncludeJS_Engine, is_function) {
-  sourcemeta::includejs::Engine engine;
+  includejs::Engine engine;
 
   auto result = engine.evaluate("(function a() {})", "index.js");
 
@@ -11,7 +11,7 @@ TEST(IncludeJS_Engine, is_function) {
 }
 
 TEST(IncludeJS_Engine, to_function) {
-  sourcemeta::includejs::Engine engine;
+  includejs::Engine engine;
 
   auto result = engine.evaluate("(function a() { return 42; })", "index.js");
 

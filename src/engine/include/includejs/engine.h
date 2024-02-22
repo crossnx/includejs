@@ -20,7 +20,6 @@
 #include <string>           // std::string
 #include <vector>           // std::vector
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
@@ -58,6 +57,5 @@ private:
 };
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

@@ -7,7 +7,6 @@
 
 #include <memory> // std::unique_ptr
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
@@ -27,8 +26,6 @@ private:
   std::unique_ptr<Internal> internal;
   bool completed{false};
 };
-
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

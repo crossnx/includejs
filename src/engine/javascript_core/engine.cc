@@ -12,7 +12,6 @@ extern "C" {
 #include <utility>   // std::move
 #include <vector>    // std::vector
 
-namespace sourcemeta {
 namespace includejs {
 
 struct Engine::Internal {
@@ -197,4 +196,3 @@ auto Engine::bind_global(std::initializer_list<std::string> location,
 }
 
 } // namespace includejs
-} // namespace sourcemeta

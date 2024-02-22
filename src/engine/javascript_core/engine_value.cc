@@ -10,7 +10,6 @@ extern "C" {
 #include <stdexcept> // std::runtime_error
 #include <vector>    // std::vector
 
-namespace sourcemeta {
 namespace includejs {
 
 struct Value::Internal {
@@ -380,4 +379,3 @@ auto Value::native() const -> const void * {
 }
 
 } // namespace includejs
-} // namespace sourcemeta

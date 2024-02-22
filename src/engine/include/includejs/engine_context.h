@@ -9,7 +9,6 @@
 #include <memory> // std::unique_ptr
 #include <string> // std::string
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
@@ -39,6 +38,5 @@ private:
 };
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

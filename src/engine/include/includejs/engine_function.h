@@ -17,15 +17,13 @@
 #else
 #if __cplusplus >= 202002L
 #include <span> // std::span
-#define SOURCEMETA_INCLUDEJS_ARGS std::span<sourcemeta::includejs::Value>
+#define SOURCEMETA_INCLUDEJS_ARGS std::span<includejs::Value>
 #else
-#define SOURCEMETA_INCLUDEJS_ARGS                                              \
-  const std::vector<sourcemeta::includejs::Value> &
+#define SOURCEMETA_INCLUDEJS_ARGS const std::vector<includejs::Value> &
 #endif
 #endif
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
-namespace sourcemeta {
 namespace includejs {
 // This is a opaque function signature that can be force-casted into
 // JSObjectCallAsFunctionCallback
@@ -33,7 +31,6 @@ namespace includejs {
 using Function = const void *(*)(const void *, const void *, const void *,
                                  const size_t, const void *[], const void **);
 } // namespace includejs
-} // namespace sourcemeta
 #endif
 
 #if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
@@ -41,7 +38,7 @@ using Function = const void *(*)(const void *, const void *, const void *,
   static const void *function(const void *context, const void *, const void *, \
                               const size_t argc, const void *raw_arguments[],  \
                               const void **exception) {                        \
-    std::vector<::sourcemeta::includejs::Value> arguments;                     \
+    std::vector<::includejs::Value> arguments;                                 \
     arguments.reserve(argc);                                                   \
     for (std::size_t index = 0; index < argc; index++) {                       \
       arguments.emplace_back(context, raw_arguments[index]);                   \
@@ -49,7 +46,7 @@ using Function = const void *(*)(const void *, const void *, const void *,
     try {                                                                      \
       return call_as({context}, arguments).native();                           \
     } catch (const std::exception &error) {                                    \
-      const ::sourcemeta::includejs::Context ignition_context{context};        \
+      const ::includejs::Context ignition_context{context};                    \
       *exception = ignition_context.make_error(error.what()).native();         \
       return ignition_context.make_undefined().native();                       \
     }                                                                          \
