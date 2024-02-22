@@ -63,3 +63,14 @@ TEST(IncludeJS_Engine, set_object_function) {
   EXPECT_TRUE(result2.is_string());
   EXPECT_EQ(result2.to_string(), "bar");
 }
+
+TEST(IncludeJS_Engine, at_throw_for_functions) {
+  sourcemeta::includejs::Engine engine;
+  sourcemeta::includejs::Context &context = engine.context();
+
+  auto obj = context.make_object();
+  obj.set("woo",
+          [](std::vector<sourcemeta::includejs::Value> args)
+              -> sourcemeta::includejs::Value { return std::move(args[0]); });
+  EXPECT_THROW(obj.at("woo"), std::runtime_error);
+}
