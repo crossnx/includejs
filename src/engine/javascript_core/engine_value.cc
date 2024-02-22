@@ -160,6 +160,31 @@ auto Value::to_boolean() const -> bool {
   return JSValueToBoolean(this->internal->context, this->internal->value);
 }
 
+auto Value::to_function() const -> Function {
+  assert(is_function());
+
+  return [context = this->internal->context,
+          value = this->internal->value](std::vector<Value> args) {
+    JSValueRef exception = nullptr;
+    JSObjectRef func = JSValueToObject(context, value, &exception);
+    assert(!exception);
+    assert(func != nullptr);
+
+    std::vector<JSValueRef> js_args;
+    js_args.reserve(args.size());
+    for (Value &arg : args) {
+      js_args.push_back(static_cast<JSValueRef>(arg.native()));
+    }
+
+    // Now we can call the function, get the result and return through
+    // the Value class.
+    JSValueRef result = JSObjectCallAsFunction(
+        context, func, nullptr, js_args.size(), js_args.data(), nullptr);
+    assert(result != nullptr);
+    return Value{context, result};
+  };
+}
+
 auto Value::at(const std::string &property) const -> std::optional<Value> {
   assert(is_object());
   JSValueRef exception = nullptr;
@@ -178,6 +203,15 @@ auto Value::at(const std::string &property) const -> std::optional<Value> {
                                           property_string, &exception);
   assert(!exception);
   JSStringRelease(property_string);
+
+  // The function could not be called outside of this object context
+  // as the C++ function store is tied to the object.
+  // This is why we don't support function properties.
+  if (JSObjectIsFunction(
+          this->internal->context,
+          JSValueToObject(this->internal->context, result, &exception))) {
+    throw std::runtime_error{"Function properties are not supported"};
+  }
   return std::make_optional<Value>(this->internal->context, result);
 }
 
