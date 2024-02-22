@@ -131,6 +131,17 @@ auto Value::is_null() const -> bool {
   return JSValueIsNull(this->internal->context, this->internal->value);
 }
 
+auto Value::is_function() const -> bool {
+  if (!is_object()) {
+    return false;
+  }
+
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
+
+  return JSObjectIsFunction(this->internal->context, object);
+}
+
 auto Value::to_number() const -> double {
   assert(is_number());
   JSValueRef exception = nullptr;
