@@ -5,16 +5,19 @@
 TEST(IncludeJS_Engine, is_function) {
   sourcemeta::includejs::Engine engine;
 
-  auto obj = engine.context().make_object();
-  obj.set(
-      "foo",
-      [](std::vector<sourcemeta::includejs::Value> arguments)
-          -> sourcemeta::includejs::Value { return std::move(arguments[0]); });
-  obj.set("bar", engine.context().from(42));
+  auto result = engine.evaluate("(function a() {})", "index.js");
 
-  EXPECT_TRUE(obj.at("foo").has_value());
-  EXPECT_TRUE(obj.at("foo").value().is_function());
+  EXPECT_TRUE(result.is_function());
+}
 
-  EXPECT_TRUE(obj.at("bar").has_value());
-  EXPECT_FALSE(obj.at("bar").value().is_function());
+TEST(IncludeJS_Engine, to_function) {
+  sourcemeta::includejs::Engine engine;
+
+  auto result = engine.evaluate("(function a() { return 42; })", "index.js");
+
+  EXPECT_TRUE(result.is_function());
+
+  auto value = result.to_function()({});
+  EXPECT_TRUE(value.is_number());
+  EXPECT_EQ(value.to_number(), 42);
 }
