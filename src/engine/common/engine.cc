@@ -10,7 +10,6 @@
 
 #if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
 
-namespace sourcemeta {
 namespace includejs {
 
 // For convenience
@@ -86,6 +85,5 @@ auto Engine::on_error(const Value &exception) -> void {
 }
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

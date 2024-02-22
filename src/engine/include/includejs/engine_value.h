@@ -10,7 +10,6 @@
 #include <string>     // std::string
 #include <vector>     // std::vector
 
-namespace sourcemeta {
 namespace includejs {
 
 // Inspired by https://github.com/sourcemeta/jsontoolkit
@@ -60,6 +59,5 @@ private:
 };
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

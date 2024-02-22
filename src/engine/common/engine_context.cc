@@ -2,7 +2,6 @@
 
 #if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
 
-namespace sourcemeta {
 namespace includejs {
 
 auto Context::from(int value) const -> Value {
@@ -15,6 +14,5 @@ auto Context::from(const std::string &value) const -> Value {
 }
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

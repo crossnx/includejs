@@ -5,7 +5,6 @@
 #include <libplatform/libplatform.h>
 #include <v8.h>
 
-namespace sourcemeta {
 namespace includejs {
 
 struct Engine::Internal {};
@@ -92,4 +91,3 @@ Engine::Engine() : internal{std::make_unique<Engine::Internal>()} {
 Engine::~Engine() {}
 
 } // namespace includejs
-} // namespace sourcemeta

@@ -3,13 +3,13 @@
 #include <includejs/engine.h>
 
 TEST(IncludeJS_Engine, is_function) {
-  sourcemeta::includejs::Engine engine;
+  includejs::Engine engine;
 
   auto obj = engine.context().make_object();
-  obj.set(
-      "foo",
-      [](std::vector<sourcemeta::includejs::Value> arguments)
-          -> sourcemeta::includejs::Value { return std::move(arguments[0]); });
+  obj.set("foo",
+          [](std::vector<includejs::Value> arguments) -> includejs::Value {
+            return std::move(arguments[0]);
+          });
   obj.set("bar", engine.context().from(42));
 
   EXPECT_TRUE(obj.at("foo").has_value());
