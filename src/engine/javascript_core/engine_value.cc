@@ -294,12 +294,8 @@ auto Value::to_vector() const -> std::vector<Value> {
     JSValueRef value = JSObjectGetPropertyAtIndex(this->internal->context,
                                                   object, index, &exception);
     assert(!exception);
-    try {
-      vector.emplace_back(static_cast<JSContextRef>(this->internal->context),
-                          value);
-    } catch (const std::exception &) {
-      throw;
-    }
+    vector.emplace_back(static_cast<JSContextRef>(this->internal->context),
+                        value);
   }
   return vector;
 }
