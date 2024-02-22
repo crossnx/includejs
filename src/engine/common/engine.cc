@@ -8,7 +8,7 @@
 #include <utility>   // std::move
 #include <vector>    // std::vector
 
-#if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
+#if !defined(INCLUDEJS_ENGINE_V8)
 
 namespace includejs {
 

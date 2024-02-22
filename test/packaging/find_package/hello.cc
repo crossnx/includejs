@@ -7,7 +7,7 @@
 auto main() -> int {
   includejs::Engine engine;
   // TODO(RaisinTen): Remove this once V8 supports this.
-#if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
+#if !defined(INCLUDEJS_ENGINE_V8)
   includejs::Value result{engine.evaluate("1 + 3", "index.js")};
   assert(result.is_number());
   std::cout << result.to_number() << "\n";

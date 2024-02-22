@@ -3,28 +3,28 @@
 #include <includejs/engine.h>
 
 static auto is_string(const includejs::Context &context,
-                      SOURCEMETA_INCLUDEJS_ARGS arguments) -> includejs::Value {
+                      INCLUDEJS_ARGS arguments) -> includejs::Value {
   return context.from(!arguments.empty() && arguments.front().is_string());
 }
 
 // TODO: Add overload that doesn't take arguments
-static auto get_details(const includejs::Context &context,
-                        SOURCEMETA_INCLUDEJS_ARGS) -> includejs::Value {
+static auto get_details(const includejs::Context &context, INCLUDEJS_ARGS)
+    -> includejs::Value {
   includejs::Value result{context.make_object()};
   result.set("version", context.from("1.0.0"));
   return result;
 }
 
-static auto promise_test(const includejs::Context &context,
-                         SOURCEMETA_INCLUDEJS_ARGS) -> includejs::Value {
+static auto promise_test(const includejs::Context &context, INCLUDEJS_ARGS)
+    -> includejs::Value {
   includejs::Promise promise{context.make_promise()};
   promise.resolve(context.from(true));
   return promise.value();
 }
 
-SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(is_string);
-SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(get_details);
-SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(promise_test);
+INCLUDEJS_EXPOSE_FUNCTION(is_string);
+INCLUDEJS_EXPOSE_FUNCTION(get_details);
+INCLUDEJS_EXPOSE_FUNCTION(promise_test);
 
 TEST(IncludeJS_Engine, bind_global_root_integer) {
   includejs::Engine engine;

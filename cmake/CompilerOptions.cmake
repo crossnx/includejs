@@ -1,4 +1,4 @@
-function(sourcemeta_includejs_add_compile_options target)
+function(includejs_add_compile_options target)
   if(NOA_COMPILER_MSVC)
     # See https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category
     target_compile_options("${target}" PRIVATE
