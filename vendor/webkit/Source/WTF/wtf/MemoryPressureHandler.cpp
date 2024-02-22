@@ -26,7 +26,9 @@
 #include "config.h"
 #include <wtf/MemoryPressureHandler.h>
 
+#include <algorithm>
 #include <atomic>
+#include <functional>
 #include <wtf/Logging.h>
 #include <wtf/MemoryFootprint.h>
 #include <wtf/NeverDestroyed.h>
@@ -65,7 +67,7 @@ static MemoryPressureHandler* memoryPressureHandlerIfExists()
 }
 
 MemoryPressureHandler::MemoryPressureHandler()
-#if OS(LINUX) || OS(FREEBSD)
+#if OS(LINUX) || OS(FREEBSD) || OS(QNX)
     : m_holdOffTimer(RunLoop::main(), this, &MemoryPressureHandler::holdOffTimerFired)
 #elif OS(WINDOWS)
     : m_windowsMeasurementTimer(RunLoop::main(), this, &MemoryPressureHandler::windowsMeasurementTimerFired)
@@ -74,6 +76,11 @@ MemoryPressureHandler::MemoryPressureHandler()
 #if PLATFORM(COCOA)
     setDispatchQueue(dispatch_get_main_queue());
 #endif
+}
+
+void MemoryPressureHandler::setMemoryFootprintPollIntervalForTesting(Seconds pollInterval)
+{
+    m_configuration.pollInterval = pollInterval;
 }
 
 void MemoryPressureHandler::setShouldUsePeriodicMemoryMonitor(bool use)
@@ -209,12 +216,29 @@ void MemoryPressureHandler::setMemoryUsagePolicyBasedOnFootprint(size_t footprin
     memoryPressureStatusChanged();
 }
 
+void MemoryPressureHandler::setMemoryFootprintNotificationThresholds(Vector<size_t>&& thresholds, WTF::Function<void(size_t)>&& handler)
+{
+    if (thresholds.isEmpty() || !handler)
+        return;
+
+    std::sort(thresholds.begin(), thresholds.end(), std::greater<>());
+    m_memoryFootprintNotificationThresholds = WTFMove(thresholds);
+    m_memoryFootprintNotificationHandler = WTFMove(handler);
+}
+
+
 void MemoryPressureHandler::measurementTimerFired()
 {
     size_t footprint = memoryFootprint();
 #if PLATFORM(COCOA)
     RELEASE_LOG(MemoryPressure, "Current memory footprint: %zu MB", footprint / MB);
 #endif
+
+    while (m_memoryFootprintNotificationThresholds.size() && footprint > m_memoryFootprintNotificationThresholds.last()) {
+        m_memoryFootprintNotificationThresholds.removeLast();
+        m_memoryFootprintNotificationHandler(footprint);
+    }
+
     auto killThreshold = thresholdForMemoryKill();
     if (killThreshold && footprint >= *killThreshold) {
         shrinkOrDie(*killThreshold);
@@ -341,7 +365,7 @@ void MemoryPressureHandler::ReliefLogger::logMemoryUsageChange()
 void MemoryPressureHandler::platformInitialize() { }
 #endif
 
-MemoryPressureHandler::Configuration::Configuration()
+MemoryPressureHandlerConfiguration::MemoryPressureHandlerConfiguration()
     : baseThreshold(std::min(3 * GB, ramSize()))
     , conservativeThresholdFraction(s_conservativeThresholdFraction)
     , strictThresholdFraction(s_strictThresholdFraction)
@@ -350,7 +374,7 @@ MemoryPressureHandler::Configuration::Configuration()
 {
 }
 
-MemoryPressureHandler::Configuration::Configuration(size_t base, double conservative, double strict, std::optional<double> kill, Seconds interval)
+MemoryPressureHandlerConfiguration::MemoryPressureHandlerConfiguration(size_t base, double conservative, double strict, std::optional<double> kill, Seconds interval)
     : baseThreshold(base)
     , conservativeThresholdFraction(conservative)
     , strictThresholdFraction(strict)

@@ -257,6 +257,8 @@ bool safeToExecute(AbstractStateType& state, Graph& graph, Node* node, bool igno
     case SameValue:
     case CheckTypeInfoFlags:
     case ParseInt:
+    case ToIntegerOrInfinity:
+    case ToLength:
     case OverridesHasInstance:
     case IsEmpty:
     case TypeOfIsUndefined:
@@ -591,6 +593,8 @@ bool safeToExecute(AbstractStateType& state, Graph& graph, Node* node, bool igno
     case TailCallForwardVarargsInlinedCaller:
     case ConstructVarargs:
     case CallWasm:
+    case CallCustomAccessorGetter:
+    case CallCustomAccessorSetter:
     case VarargsLength:
     case LoadVarargs:
     case CallForwardVarargs:
@@ -625,7 +629,9 @@ bool safeToExecute(AbstractStateType& state, Graph& graph, Node* node, bool igno
     case SetFunctionName:
     case NewStringObject:
     case InByVal:
+    case InByValMegamorphic:
     case InById:
+    case InByIdMegamorphic:
     case EnumeratorInByVal:
     case EnumeratorHasOwnProperty:
     case HasPrivateName:

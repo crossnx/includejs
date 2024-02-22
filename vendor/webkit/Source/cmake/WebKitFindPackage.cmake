@@ -16,9 +16,6 @@
 macro(find_package package)
     set(_found_package OFF)
 
-    message(STATUS "XXX PREFIX: ${CMAKE_PREFIX_PATH}")
-    message(STATUS "XXX MODULE: ${CMAKE_MODULE_PATH}")
-
     # Apple builds have a unique location for ICU
     if (USE_APPLE_ICU AND "${package}" STREQUAL "ICU")
         set(_found_package ON)

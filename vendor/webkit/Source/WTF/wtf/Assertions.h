@@ -234,6 +234,8 @@ WTF_EXPORT_PRIVATE bool WTFWillLogWithLevel(WTFLogChannel*, WTFLogLevel);
 
 WTF_EXPORT_PRIVATE NEVER_INLINE void WTFGetBacktrace(void** stack, int* size);
 WTF_EXPORT_PRIVATE void WTFReportBacktraceWithPrefix(const char*);
+WTF_EXPORT_PRIVATE void WTFReportBacktraceWithStackDepth(int);
+WTF_EXPORT_PRIVATE void WTFReportBacktraceWithPrefixAndStackDepth(const char*, int);
 WTF_EXPORT_PRIVATE void WTFReportBacktrace(void);
 #ifdef __cplusplus
 WTF_EXPORT_PRIVATE void WTFReportBacktraceWithPrefixAndPrintStream(WTF::PrintStream&, const char*);
@@ -349,6 +351,7 @@ WTF_EXPORT_PRIVATE NO_RETURN_DUE_TO_CRASH void WTFCrashWithSecurityImplication(v
 #define ASSERT_UNUSED(variable, assertion, ...) ((void)variable)
 
 #if ENABLE(SECURITY_ASSERTIONS)
+#define ASSERT_NOT_REACHED_WITH_SECURITY_IMPLICATION(...) CRASH_WITH_SECURITY_IMPLICATION_AND_INFO(__VA_ARGS__)
 #define ASSERT_WITH_SECURITY_IMPLICATION(assertion) \
     (!(assertion) ? \
         (WTFReportAssertionFailure(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, #assertion), \
@@ -356,9 +359,12 @@ WTF_EXPORT_PRIVATE NO_RETURN_DUE_TO_CRASH void WTFCrashWithSecurityImplication(v
         (void)0)
 
 #define ASSERT_WITH_SECURITY_IMPLICATION_DISABLED 0
+#define NO_RETURN_DUE_TO_ASSERT_WITH_SECURITY_IMPLICATION NO_RETURN_DUE_TO_CRASH
 #else /* not ENABLE(SECURITY_ASSERTIONS) */
+#define ASSERT_NOT_REACHED_WITH_SECURITY_IMPLICATION(...) ((void)0)
 #define ASSERT_WITH_SECURITY_IMPLICATION(assertion) ((void)0)
 #define ASSERT_WITH_SECURITY_IMPLICATION_DISABLED 1
+#define NO_RETURN_DUE_TO_ASSERT_WITH_SECURITY_IMPLICATION
 #endif /* ENABLE(SECURITY_ASSERTIONS) */
 
 #else /* ASSERT_ENABLED */
@@ -389,6 +395,11 @@ WTF_EXPORT_PRIVATE NO_RETURN_DUE_TO_CRASH void WTFCrashWithSecurityImplication(v
     CRASH_WITH_INFO(__VA_ARGS__); \
 } while (0)
 
+#define ASSERT_NOT_REACHED_WITH_SECURITY_IMPLICATION(...) do { \
+    WTFReportAssertionFailure(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, 0); \
+    CRASH_WITH_SECURITY_IMPLICATION_AND_INFO(__VA_ARGS__); \
+} while (0)
+
 #define ASSERT_NOT_REACHED_UNDER_CONSTEXPR_CONTEXT(...) do { \
     CRASH_UNDER_CONSTEXPR_CONTEXT(); \
 } while (0)
@@ -408,6 +419,7 @@ WTF_EXPORT_PRIVATE NO_RETURN_DUE_TO_CRASH void WTFCrashWithSecurityImplication(v
 #define ASSERT_UNUSED(variable, assertion, ...) ASSERT(assertion, __VA_ARGS__)
 
 #define NO_RETURN_DUE_TO_ASSERT NO_RETURN_DUE_TO_CRASH
+#define NO_RETURN_DUE_TO_ASSERT_WITH_SECURITY_IMPLICATION NO_RETURN_DUE_TO_CRASH
 
 /* ASSERT_WITH_SECURITY_IMPLICATION
  

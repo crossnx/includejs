@@ -77,6 +77,10 @@
 #include <mach/thread_switch.h>
 #endif
 
+#if OS(QNX)
+#define SA_RESTART 0
+#endif
+
 namespace WTF {
 
 Thread::~Thread()
@@ -262,6 +266,7 @@ dispatch_qos_class_t Thread::dispatchQOSClass(QOS qos)
 }
 #endif
 
+#if HAVE(SCHEDULING_POLICIES) || OS(LINUX)
 static int schedPolicy(Thread::SchedulingPolicy schedulingPolicy)
 {
     switch (schedulingPolicy) {
@@ -275,6 +280,7 @@ static int schedPolicy(Thread::SchedulingPolicy schedulingPolicy)
     ASSERT_NOT_REACHED();
     return SCHED_OTHER;
 }
+#endif
 
 #if OS(LINUX)
 static int schedPolicy(Thread::QOS qos, Thread::SchedulingPolicy schedulingPolicy)
@@ -334,7 +340,7 @@ bool Thread::establishHandle(NewThreadContext* context, std::optional<size_t> st
     UNUSED_PARAM(qos);
 #endif
 #if !HAVE(SCHEDULING_POLICIES)
-    UNUSED_PARAM(schedulingPolicy)
+    UNUSED_PARAM(schedulingPolicy);
 #endif
 #endif
 
@@ -651,7 +657,7 @@ void ThreadCondition::wait(Mutex& mutex)
 
 bool ThreadCondition::timedWait(Mutex& mutex, WallTime absoluteTime)
 {
-    if (std::isinf(absoluteTime)) {
+    if (absoluteTime.isInfinity()) {
         if (absoluteTime == -WallTime::infinity())
             return false;
         wait(mutex);

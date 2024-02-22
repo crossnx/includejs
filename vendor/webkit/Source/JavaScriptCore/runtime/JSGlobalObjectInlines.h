@@ -209,6 +209,7 @@ ALWAYS_INLINE Structure* JSGlobalObject::arrayStructureForIndexingTypeDuringAllo
     RELEASE_AND_RETURN(scope, InternalFunction::createSubclassStructure(globalObject, asObject(newTarget), functionGlobalObject->arrayStructureForIndexingTypeDuringAllocation(indexingType)));
 }
 
+inline JSFunction* JSGlobalObject::evalFunction() const { return jsCast<JSFunction*>(linkTimeConstant(LinkTimeConstant::evalFunction)); }
 inline JSFunction* JSGlobalObject::throwTypeErrorFunction() const { return jsCast<JSFunction*>(linkTimeConstant(LinkTimeConstant::throwTypeErrorFunction)); }
 inline JSFunction* JSGlobalObject::iteratorProtocolFunction() const { return jsCast<JSFunction*>(linkTimeConstant(LinkTimeConstant::performIteration)); }
 inline JSFunction* JSGlobalObject::newPromiseCapabilityFunction() const { return jsCast<JSFunction*>(linkTimeConstant(LinkTimeConstant::newPromiseCapability)); }
@@ -376,6 +377,18 @@ inline JSObject* JSGlobalObject::arrayBufferConstructor(ArrayBufferSharingMode s
     return nullptr;
 }
 
+inline GetterSetter* JSGlobalObject::arrayBufferSpeciesGetterSetter(ArrayBufferSharingMode sharingMode) const
+{
+    switch (sharingMode) {
+    case ArrayBufferSharingMode::Default:
+        return m_arrayBufferSpeciesGetterSetter.get();
+    case ArrayBufferSharingMode::Shared:
+        return m_sharedArrayBufferSpeciesGetterSetter.get();
+    }
+    RELEASE_ASSERT_NOT_REACHED();
+    return nullptr;
+}
+
 inline void JSGlobalObject::createRareDataIfNeeded()
 {
     if (m_rareData)
@@ -437,6 +450,16 @@ inline JSScope* JSGlobalObject::globalScope()
     return m_globalLexicalEnvironment.get();
 }
 
+// https://tc39.es/ecma262/#sec-hasvardeclaration
+inline bool JSGlobalObject::hasVarDeclaration(const RefPtr<UniquedStringImpl>& ident)
+{
+    SymbolTableEntry entry = symbolTable()->get(ident.get());
+    if (!entry.isNull() && entry.scopeOffset() > m_lastStaticGlobalOffset)
+        return true;
+
+    return m_varNamesDeclaredViaEval.contains(ident);
+}
+
 // https://tc39.es/ecma262/#sec-candeclareglobalvar
 inline bool JSGlobalObject::canDeclareGlobalVar(const Identifier& ident)
 {
@@ -463,8 +486,10 @@ inline void JSGlobalObject::createGlobalVarBinding(const Identifier& ident)
     ASSERT(isStructureExtensible());
     if constexpr (context == BindingCreationContext::Global)
         addSymbolTableEntry(ident);
-    else
+    else {
         putDirect(vm, ident, jsUndefined());
+        m_varNamesDeclaredViaEval.add(ident.impl());
+    }
 }
 
 inline InlineWatchpointSet& JSGlobalObject::typedArraySpeciesWatchpointSet(TypedArrayType type)

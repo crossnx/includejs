@@ -159,6 +159,7 @@ void clobberize(Graph& graph, Node* node, const ReadFunctor& read, const WriteFu
         case GetTypedArrayByteOffsetAsInt52:
         case GetVectorLength:
         case InByVal:
+        case InByValMegamorphic:
         case PutByValDirect:
         case PutByVal:
         case PutByValAlias:
@@ -768,12 +769,16 @@ void clobberize(Graph& graph, Node* node, const ReadFunctor& read, const WriteFu
     case ConstructForwardVarargs:
     case CallDirectEval:
     case CallWasm:
+    case CallCustomAccessorGetter:
+    case CallCustomAccessorSetter:
     case ToPrimitive:
     case ToPropertyKey:
     case InByVal:
+    case InByValMegamorphic:
     case EnumeratorInByVal:
     case EnumeratorHasOwnProperty:
     case InById:
+    case InByIdMegamorphic:
     case HasPrivateName:
     case HasPrivateBrand:
     case HasOwnProperty:
@@ -1290,6 +1295,15 @@ void clobberize(Graph& graph, Node* node, const ReadFunctor& read, const WriteFu
 
         clobberTop();
         return;
+
+    case ToIntegerOrInfinity:
+    case ToLength: {
+        if (node->child1().useKind() == UntypedUse)
+            clobberTop();
+        else
+            def(PureValue(node));
+        return;
+    }
 
     case OverridesHasInstance:
         read(JSCell_typeInfoFlags);

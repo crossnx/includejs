@@ -24,7 +24,6 @@ Source/PlatformWin.cmake
 Source/WebDriver
 Source/WebGPU
 Source/WebKitLegacy
-Source/bmalloc
 Source/WebInspectorUI
 Source/WebKit
 Source/WebCore

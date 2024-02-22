@@ -402,6 +402,7 @@ ARM_INSTRUCTIONS =
      "storecondh",
      "storecondi",
      "storecond2i",
+     "writefence",
     ]
 
 ARM64_INSTRUCTIONS =
@@ -449,7 +450,9 @@ ARM64_INSTRUCTIONS =
      "atomicloadi",
      "atomicloadq",
      "loadpairq",
+     "loadpairi",
      "storepairq",
+     "storepairi",
      "loadpaird",
      "storepaird",
     ]

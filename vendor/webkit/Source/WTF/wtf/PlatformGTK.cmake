@@ -5,6 +5,7 @@ list(APPEND WTF_PUBLIC_HEADERS
     glib/GMutexLocker.h
     glib/GRefPtr.h
     glib/GSocketMonitor.h
+    glib/GThreadSafeWeakPtr.h
     glib/GTypedefs.h
     glib/GUniquePtr.h
     glib/GWeakPtr.h
@@ -84,7 +85,7 @@ list(APPEND WTF_LIBRARIES
     ZLIB::ZLIB
 )
 
-if (Journald_FOUND)
+if (ENABLE_JOURNALD_LOG)
     list(APPEND WTF_LIBRARIES Journald::Journald)
 endif ()
 
@@ -92,3 +93,9 @@ list(APPEND WTF_SYSTEM_INCLUDE_DIRECTORIES
     ${GIO_UNIX_INCLUDE_DIRS}
     ${GLIB_INCLUDE_DIRS}
 )
+
+if (USE_LIBBACKTRACE)
+    list(APPEND WTF_LIBRARIES
+        LIBBACKTRACE::LIBBACKTRACE
+    )
+endif ()
