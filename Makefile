@@ -45,11 +45,8 @@ webkit: .always
 		-DPORT="JSCOnly" \
 		-DENABLE_TOOLS:BOOL=OFF \
 		-DDEVELOPER_MODE:BOOL=OFF \
-		-DENABLE_FTL_JIT:BOOL=ON \
 		-DENABLE_STATIC_JSC:BOOL=ON \
-		-DUSE_SYSTEM_MALLOC:BOOL=ON \
-		-DICU_DEBUG:BOOL=ON \
-		-DWEBKIT_LIBRARIES_DIR:STRING=D:/a/includejs/includejs/build2/WebKitLibraries \
+		-DUSE_THIN_ARCHIVES:BOOL=ON \
 		-DCMAKE_BUILD_TYPE:STRING=$(PRESET)
 	$(CMAKE) --build ./build --config $(PRESET) --parallel 4
 
