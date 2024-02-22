@@ -34,20 +34,20 @@ if(INCLUDEJS_INSTALL)
   endif()
 endif()
 
-sourcemeta_includejs_add_compile_options(includejs_engine)
+includejs_add_compile_options(includejs_engine)
 
 if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")
   find_package(JavaScriptCore REQUIRED)
   target_link_libraries(includejs_engine
     PRIVATE JavaScriptCore::JavaScriptCore)
   target_compile_definitions(includejs_engine
-    PUBLIC SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
+    PUBLIC INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
 elseif(INCLUDEJS_BACKEND STREQUAL "V8")
   find_package(V8 REQUIRED)
   target_link_libraries(includejs_engine
     PRIVATE V8::V8)
   target_compile_definitions(includejs_engine
-    PUBLIC SOURCEMETA_INCLUDEJS_ENGINE_V8)
+    PUBLIC INCLUDEJS_ENGINE_V8)
 else()
   message(FATAL_ERROR "Unknown IncludeJS backend: ${INCLUDEJS_BACKEND}")
 endif()

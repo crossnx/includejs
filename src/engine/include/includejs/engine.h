@@ -1,5 +1,5 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_H_
+#ifndef INCLUDEJS_ENGINE_H_
+#define INCLUDEJS_ENGINE_H_
 
 /// @defgroup engine Engine
 /// @brief The IncludeJS higher-level abstraction of a JavaScript engine
@@ -35,7 +35,7 @@ public:
       -> Value;
 
   // TODO(RaisinTen): Add support for bind_function() to the V8 backend.
-#if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
+#if !defined(INCLUDEJS_ENGINE_V8)
   auto bind_function(std::initializer_list<std::string> location,
                      Function function) -> void;
 #endif

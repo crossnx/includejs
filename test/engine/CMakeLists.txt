@@ -13,7 +13,7 @@ add_executable(includejs_engine_unit
   engine_value_undefined_test.cc
   engine_value_null_test.cc)
 
-sourcemeta_includejs_add_compile_options(includejs_engine_unit)
+includejs_add_compile_options(includejs_engine_unit)
 
 target_link_libraries(includejs_engine_unit
   PRIVATE GTest::gtest GTest::gtest_main)

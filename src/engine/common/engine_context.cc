@@ -1,6 +1,6 @@
 #include <includejs/engine_context.h>
 
-#if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
+#if !defined(INCLUDEJS_ENGINE_V8)
 
 namespace includejs {
 
