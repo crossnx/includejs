@@ -18,6 +18,59 @@ struct Value::Internal {
   JSValueRef value;
 };
 
+static auto js_string_to_std_string(JSStringRef value) -> std::string {
+  // JavaScriptCore doesn't have a function to fetch the UTF-8 byte size
+  // of a given string. It can only give us the amount of Unicode code-points
+  // in the string, which may be more than the bytes required to store it.
+  // As a consequence, we can't do much than allocating the maximum possible
+  // buffer to hold the string.
+  const size_t max_size = JSStringGetMaximumUTF8CStringSize(value);
+  std::vector<char> buffer(max_size);
+  // Converts a JavaScript string into a null-terminated UTF-8 string,
+  // and copies the result into an external byte buffer.
+  JSStringGetUTF8CString(value, buffer.data(), max_size);
+  return {buffer.data()};
+}
+
+// Converting a value into a string first requires copying
+// the value reference into a string reference.
+static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
+    -> std::string {
+  JSValueRef exception = nullptr;
+  JSStringRef copy = JSValueToStringCopy(context, value, &exception);
+  assert(!exception);
+
+  try {
+    std::string result{js_string_to_std_string(copy)};
+    JSStringRelease(copy);
+    return result;
+  } catch (const std::exception &) {
+    JSStringRelease(copy);
+    throw;
+  }
+}
+
+static auto get_current_object(JSContextRef context, JSValueRef value)
+    -> JSObjectRef {
+  JSValueRef exception = nullptr;
+  JSObjectRef object = JSValueToObject(context, value, &exception);
+  assert(!exception);
+  assert(object == value);
+  return object;
+}
+
+static auto get_object_length(JSContextRef context, JSObjectRef object)
+    -> std::size_t {
+  JSValueRef exception = nullptr;
+  JSStringRef length_string = JSStringCreateWithUTF8CString("length");
+  const double length = JSValueToNumber(
+      context, JSObjectGetProperty(context, object, length_string, &exception),
+      &exception);
+  assert(!exception);
+  JSStringRelease(length_string);
+  return static_cast<std::size_t>(length);
+}
+
 Value::Value(const void *context, const void *value)
     : internal{std::make_unique<Value::Internal>()} {
   this->internal->context = static_cast<JSContextRef>(context);
@@ -40,6 +93,10 @@ auto Value::is_string() const -> bool {
 
 auto Value::is_undefined() const -> bool {
   return JSValueIsUndefined(this->internal->context, this->internal->value);
+}
+
+auto Value::is_array() const -> bool {
+  return JSValueIsArray(this->internal->context, this->internal->value);
 }
 
 auto Value::is_error() const -> bool {
@@ -81,38 +138,6 @@ auto Value::to_number() const -> double {
                                       this->internal->value, &exception);
   assert(!exception);
   return result;
-}
-
-static auto js_string_to_std_string(JSStringRef value) -> std::string {
-  // JavaScriptCore doesn't have a function to fetch the UTF-8 byte size
-  // of a given string. It can only give us the amount of Unicode code-points
-  // in the string, which may be more than the bytes required to store it.
-  // As a consequence, we can't do much than allocating the maximum possible
-  // buffer to hold the string.
-  const size_t max_size = JSStringGetMaximumUTF8CStringSize(value);
-  std::vector<char> buffer(max_size);
-  // Converts a JavaScript string into a null-terminated UTF-8 string,
-  // and copies the result into an external byte buffer.
-  JSStringGetUTF8CString(value, buffer.data(), max_size);
-  return {buffer.data()};
-}
-
-// Converting a value into a string first requires copying
-// the value reference into a string reference.
-static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
-    -> std::string {
-  JSValueRef exception = nullptr;
-  JSStringRef copy = JSValueToStringCopy(context, value, &exception);
-  assert(!exception);
-
-  try {
-    std::string result{js_string_to_std_string(copy)};
-    JSStringRelease(copy);
-    return result;
-  } catch (const std::exception &) {
-    JSStringRelease(copy);
-    throw;
-  }
 }
 
 auto Value::to_string() const -> std::string {
@@ -254,6 +279,55 @@ auto Value::to_map() const -> std::map<std::string, Value> {
 
   JSPropertyNameArrayRelease(properties);
   return map;
+}
+
+auto Value::to_vector() const -> std::vector<Value> {
+  assert(is_array());
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
+
+  JSValueRef exception = nullptr;
+  std::vector<Value> vector;
+  for (unsigned int index = 0; index < static_cast<std::size_t>(length);
+       index++) {
+    JSValueRef value = JSObjectGetPropertyAtIndex(this->internal->context,
+                                                  object, index, &exception);
+    assert(!exception);
+    vector.emplace_back(static_cast<JSContextRef>(this->internal->context),
+                        value);
+  }
+  return vector;
+}
+
+auto Value::at(const unsigned int &position) const -> std::optional<Value> {
+  assert(is_array());
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
+
+  if (position >= static_cast<std::size_t>(length)) {
+    return std::nullopt;
+  }
+
+  JSValueRef exception = nullptr;
+  JSValueRef result = JSObjectGetPropertyAtIndex(this->internal->context,
+                                                 object, position, &exception);
+  assert(!exception);
+  return std::make_optional<Value>(this->internal->context, result);
+}
+
+auto Value::push(Value value) -> void {
+  assert(is_array());
+  JSObjectRef object =
+      get_current_object(this->internal->context, this->internal->value);
+  std::size_t length = get_object_length(this->internal->context, object);
+
+  JSValueRef exception = nullptr;
+  JSObjectSetPropertyAtIndex(
+      this->internal->context, object, static_cast<unsigned int>(length),
+      static_cast<JSValueRef>(value.native()), &exception);
+  assert(!exception);
 }
 
 auto Value::native() const -> const void * {
