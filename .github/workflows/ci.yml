@@ -19,6 +19,13 @@ jobs:
             cxx: clang++
             type: shared
             backend: JavaScriptCore
+            # TODO(RaisinTen): Support other OSs and static configuration for
+            # the V8 backend.
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+            type: shared
+            backend: V8
           - os: ubuntu-latest
             cc: clang
             cxx: clang++

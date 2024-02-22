@@ -1,3 +1,8 @@
+if(INCLUDEJS_BACKEND STREQUAL "V8")
+  # TODO(RaisinTen): Start testing the V8 backend.
+  return()
+endif()
+
 add_executable(includejs_engine_unit
   engine_binding_test.cc
   engine_evaluate_test.cc

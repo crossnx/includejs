@@ -8,6 +8,8 @@ if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_context.cc)
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_promise.cc)
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_value.cc)
+elseif(INCLUDEJS_BACKEND STREQUAL "V8")
+  list(APPEND INCLUDEJS_ENGINE_SOURCES v8/engine.cc)
 else()
   message(FATAL_ERROR "Unknown IncludeJS backend: ${INCLUDEJS_BACKEND}")
 endif()
@@ -24,6 +26,11 @@ if(INCLUDEJS_INSTALL)
       "${PROJECT_SOURCE_DIR}/cmake/FindJavaScriptCore.cmake"
       DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/includejs"
       COMPONENT includejs_dev)
+  elseif(INCLUDEJS_BACKEND STREQUAL "V8")
+    install(FILES
+      "${PROJECT_SOURCE_DIR}/cmake/FindV8.cmake"
+      DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/includejs"
+      COMPONENT includejs_dev)
   endif()
 endif()
 
@@ -35,6 +42,12 @@ if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")
     PRIVATE JavaScriptCore::JavaScriptCore)
   target_compile_definitions(includejs_engine
     PUBLIC SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
+elseif(INCLUDEJS_BACKEND STREQUAL "V8")
+  find_package(V8 REQUIRED)
+  target_link_libraries(includejs_engine
+    PRIVATE V8::V8)
+  target_compile_definitions(includejs_engine
+    PUBLIC SOURCEMETA_INCLUDEJS_ENGINE_V8)
 else()
   message(FATAL_ERROR "Unknown IncludeJS backend: ${INCLUDEJS_BACKEND}")
 endif()

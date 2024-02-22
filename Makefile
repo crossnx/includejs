@@ -5,6 +5,7 @@ CTEST = ctest
 # Options
 PRESET = Debug
 SHARED = OFF
+BACKEND = JavaScriptCore
 
 all: configure compile test
 
@@ -12,7 +13,7 @@ configure: .always
 	$(CMAKE) -S . -B ./build \
 		-DCMAKE_BUILD_TYPE:STRING=$(PRESET) \
 		-DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON \
-		-DINCLUDEJS_BACKEND:STRING=JavaScriptCore \
+		-DINCLUDEJS_BACKEND:STRING=$(BACKEND) \
 		-DINCLUDEJS_ENGINE:BOOL=ON \
 		-DINCLUDEJS_TESTS:BOOL=ON \
 		-DINCLUDEJS_DOCS:BOOL=ON \

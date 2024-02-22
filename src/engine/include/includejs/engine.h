@@ -35,8 +35,11 @@ public:
   auto evaluate(std::ifstream &stream, const std::filesystem::path &path)
       -> Value;
 
+  // TODO(RaisinTen): Add support for bind_function() to the V8 backend.
+#if !defined(SOURCEMETA_INCLUDEJS_ENGINE_V8)
   auto bind_function(std::initializer_list<std::string> location,
                      Function function) -> void;
+#endif
   auto bind_global(std::initializer_list<std::string> location, Value value)
       -> void;
   auto bind_global(std::initializer_list<std::string> location, bool value)
