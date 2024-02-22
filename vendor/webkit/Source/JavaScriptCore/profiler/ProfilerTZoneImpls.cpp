@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Andy VanWagoner <andy@vanwagoner.family>.
+ * Copyright (C) 2023 Apple Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,3 +23,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "config.h"
+#include "ProfilerExecutionCounter.h"
+#include <wtf/TZoneMallocInlines.h>
+
+namespace JSC { namespace Profiler {
+
+WTF_MAKE_TZONE_ALLOCATED_IMPL(ExecutionCounter);
+
+} } // namespace JSC::Profiler

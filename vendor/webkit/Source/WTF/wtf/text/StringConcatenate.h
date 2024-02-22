@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2018 Apple Inc. All rights reserved.
+ * Copyright (C) 2010-2023 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -81,6 +81,42 @@ private:
     UChar m_character;
 };
 
+template<> class StringTypeAdapter<char32_t, void> {
+public:
+    StringTypeAdapter(char32_t character)
+        : m_character { character }
+    {
+    }
+
+    unsigned length() const { return U16_LENGTH(m_character); }
+    bool is8Bit() const { return isLatin1(m_character); }
+
+    void writeTo(LChar* destination) const
+    {
+        ASSERT(is8Bit());
+        *destination = m_character;
+    }
+
+    void writeTo(UChar* destination) const
+    {
+        if (U_IS_BMP(m_character)) {
+            *destination = m_character;
+            return;
+        }
+        destination[0] = U16_LEAD(m_character);
+        destination[1] = U16_TRAIL(m_character);
+    }
+
+private:
+    char32_t m_character;
+};
+
+inline unsigned stringLength(size_t length)
+{
+    RELEASE_ASSERT(length <= String::MaxLength);
+    return static_cast<unsigned>(length);
+}
+
 template<> class StringTypeAdapter<const LChar*, void> {
 public:
     StringTypeAdapter(const LChar* characters)
@@ -96,9 +132,7 @@ public:
 private:
     static unsigned computeLength(const LChar* characters)
     {
-        size_t length = std::strlen(reinterpret_cast<const char*>(characters));
-        RELEASE_ASSERT(length <= String::MaxLength);
-        return static_cast<unsigned>(length);
+        return stringLength(std::strlen(reinterpret_cast<const char*>(characters)));
     }
 
     const LChar* m_characters;
@@ -124,8 +158,7 @@ private:
         size_t length = 0;
         while (characters[length])
             ++length;
-        RELEASE_ASSERT(length <= String::MaxLength);
-        return static_cast<unsigned>(length);
+        return stringLength(length);
     }
 
     const UChar* m_characters;
@@ -156,28 +189,35 @@ public:
     }
 };
 
-template<typename CharType, size_t N>
-class StringTypeAdapter<Vector<CharType, N>, void> {
+template<typename CharacterType, size_t Extent> class StringTypeAdapter<std::span<CharacterType, Extent>, void> {
 public:
-    using CharTypeForString = std::conditional_t<sizeof(CharType) == sizeof(LChar), LChar, UChar>;
-    static_assert(sizeof(CharTypeForString) == sizeof(CharType));
-
-    StringTypeAdapter(const Vector<CharType, N>& vector)
-        : m_vector { vector }
+    StringTypeAdapter(std::span<CharacterType, Extent> span)
+        : m_characters { span.data() }
+        , m_length { stringLength(span.size()) }
     {
     }
 
-    size_t length() const { return m_vector.size(); }
-    bool is8Bit() const { return sizeof(CharType) == 1; }
-    template<typename CharacterType> void writeTo(CharacterType* destination) const { StringImpl::copyCharacters(destination, characters(), length()); }
+    unsigned length() const { return m_length; }
+    static constexpr bool is8Bit() { return sizeof(CharacterType) == 1; }
+
+    template<typename DestinationCharacterType> void writeTo(DestinationCharacterType* destination) const
+    {
+        using CharacterTypeForString = std::conditional_t<sizeof(CharacterType) == sizeof(LChar), LChar, UChar>;
+        static_assert(sizeof(CharacterTypeForString) == sizeof(CharacterType));
+        StringImpl::copyCharacters(destination, reinterpret_cast<const CharacterTypeForString*>(m_characters), m_length);
+    }
 
 private:
-    const CharTypeForString* characters() const
-    {
-        return reinterpret_cast<const CharTypeForString*>(m_vector.data());
-    }
+    const CharacterType* m_characters;
+    unsigned m_length;
+};
 
-    const Vector<CharType, N>& m_vector;
+template<typename CharacterType, size_t InlineCapacity> class StringTypeAdapter<Vector<CharacterType, InlineCapacity>, void> : public StringTypeAdapter<std::span<const CharacterType>> {
+public:
+    StringTypeAdapter(const Vector<CharacterType, InlineCapacity>& vector)
+        : StringTypeAdapter<std::span<const CharacterType>> { vector.span() }
+    {
+    }
 };
 
 template<> class StringTypeAdapter<StringImpl*, void> {
@@ -248,6 +288,45 @@ public:
         : StringTypeAdapter<StringImpl&, void> { string }
     {
     }
+};
+
+struct FromUTF8 {
+    const char* characters;
+    unsigned lengthUTF8 { 0 };
+    unsigned lengthUTF16 { 0 };
+    bool is8Bit { true };
+    bool conversionFailed { true };
+
+    FromUTF8(const char* characters, size_t length)
+        : characters { characters }
+    {
+        auto result = Unicode::computeUTFLengths(characters, characters + length);
+        if (result.result == Unicode::ConversionResult::SourceIllegal)
+            return;
+        if (result.lengthUTF16 > String::MaxLength)
+            return;
+        lengthUTF8 = result.lengthUTF8;
+        lengthUTF16 = result.lengthUTF16;
+        is8Bit = result.isAllASCII;
+        conversionFailed = false;
+    }
+    template<typename T, size_t Extent> FromUTF8(std::span<T, Extent> span) : FromUTF8(span.data(), span.size()) { }
+};
+
+template<> class StringTypeAdapter<FromUTF8, void> {
+public:
+    StringTypeAdapter(FromUTF8 characters)
+        : m_characters { characters }
+    {
+    }
+
+    unsigned length() const { return m_characters.lengthUTF16; }
+    bool is8Bit() const { return m_characters.is8Bit; }
+    void writeTo(LChar* destination) const { memcpy(destination, m_characters.characters, m_characters.lengthUTF16); }
+    void writeTo(UChar* destination) const { Unicode::convertUTF8ToUTF16(m_characters.characters, m_characters.characters + m_characters.lengthUTF8, &destination, destination + m_characters.lengthUTF16); }
+
+private:
+    FromUTF8 m_characters;
 };
 
 template<typename... StringTypes> class StringTypeAdapter<std::tuple<StringTypes...>, void> {
@@ -325,8 +404,7 @@ private:
     StringTypeAdapter<UnderlyingElementType> m_underlyingAdapter;
 };
 
-template<unsigned N>
-struct Indentation {
+template<unsigned N> struct Indentation {
     unsigned operator++() { return ++value; }
     unsigned operator++(int) { return value++; }
     unsigned operator--() { return --value; }
@@ -334,7 +412,6 @@ struct Indentation {
 
     unsigned value { 0 };
 };
-
 
 template<unsigned N>
 struct IndentationScope {
@@ -543,6 +620,7 @@ inline String WARN_UNUSED_RETURN makeStringByInserting(StringView originalString
 
 } // namespace WTF
 
+using WTF::FromUTF8;
 using WTF::Indentation;
 using WTF::IndentationScope;
 using WTF::makeAtomString;

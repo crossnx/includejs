@@ -159,7 +159,7 @@ class Preference
   end
 
   def apiStatus
-    "API::FeatureStatus::" + @status.capitalize
+    "API::FeatureConstant<API::FeatureStatus::#{@status.capitalize}>{}"
   end
 
   def apiCategory
@@ -256,9 +256,6 @@ class Preferences
     @warning = "THIS FILE WAS AUTOMATICALLY GENERATED, DO NOT EDIT."
   end
 
-  # Corresponds to WebFeatureStatus enum cases. "developer" and up require human-readable names.
-  STATUSES = %w{ embedder unstable internal developer testable preview stable mature }
-
   # Corresponds to WebFeatureCategory enum cases.
   CATEGORIES = %w{ animation css dom html javascript media networking privacy security }
 
@@ -274,10 +271,6 @@ class Preferences
       parsedPreferences.each do |name, options|
         webcoreSettingOnly = !options["webcoreBinding"] && options["defaultValue"].keys == ["WebCore"]
         status = options["status"]
-        if !STATUSES.include?(status)
-          reject.call "Preference #{name}'s status \"#{status}\" is not one of the known statuses: #{STATUSES}"
-          next
-        end
 
         if %w{ unstable internal developer testable preview stable }.include?(status)
           reject.call "Preference #{name} has no humanReadableName, which is required." if !options["humanReadableName"]
@@ -334,6 +327,17 @@ class Preferences
     else
       FileUtils.remove_file(tempResultFile)
       FileUtils.uptodate?(resultFile, [templateFile]) or FileUtils.touch(resultFile)
+    end
+  end
+  
+  def constantize(value)
+    case value
+    when true
+      "std::true_type{}"
+    when false
+      "std::false_type{}"
+    else
+      value
     end
   end
 end

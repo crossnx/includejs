@@ -294,6 +294,8 @@ bool doesGC(Graph& graph, Node* node)
     case DirectTailCall:
     case DirectTailCallInlinedCaller:
     case CallWasm:
+    case CallCustomAccessorGetter:
+    case CallCustomAccessorSetter:
     case ForceOSRExit:
     case FunctionToString:
     case FunctionBind:
@@ -311,7 +313,9 @@ bool doesGC(Graph& graph, Node* node)
     case HasIndexedProperty:
     case HasOwnProperty:
     case InById:
+    case InByIdMegamorphic:
     case InByVal:
+    case InByValMegamorphic:
     case HasPrivateName:
     case HasPrivateBrand:
     case InstanceOf:
@@ -453,6 +457,10 @@ bool doesGC(Graph& graph, Node* node)
     default:
 #endif // not ASSERT_ENABLED
         return true;
+
+    case ToIntegerOrInfinity:
+    case ToLength:
+        return node->child1().useKind() == UntypedUse;
 
     case GlobalIsNaN:
         return node->child1().useKind() != DoubleRepUse;

@@ -226,7 +226,7 @@ class Assembler
         @lastlabel = ""
     end
 
-    def putsLabel(labelName, isGlobal, isAligned)
+    def putsLabel(labelName, isGlobal, isExport, isAligned)
         raise unless @state == :asm
         @deferredNextLabelActions.each {
             | action |
@@ -240,9 +240,17 @@ class Assembler
         if isGlobal
             if !$emitWinAsm
                 if isAligned
-                    @outp.puts(formatDump("OFFLINE_ASM_GLOBAL_LABEL(#{labelName})", lastComment))
+                    if isExport
+                        @outp.puts(formatDump("OFFLINE_ASM_GLOBAL_EXPORT_LABEL(#{labelName})", lastComment))
+                    else
+                        @outp.puts(formatDump("OFFLINE_ASM_GLOBAL_LABEL(#{labelName})", lastComment))
+                    end
                 else
-                    @outp.puts(formatDump("OFFLINE_ASM_UNALIGNED_GLOBAL_LABEL(#{labelName})", lastComment))
+                    if isExport
+                        @outp.puts(formatDump("OFFLINE_ASM_UNALIGNED_GLOBAL_EXPORT_LABEL(#{labelName})", lastComment))
+                    else
+                        @outp.puts(formatDump("OFFLINE_ASM_UNALIGNED_GLOBAL_LABEL(#{labelName})", lastComment))
+                    end
                 end
             else
                 putsProc(labelName, lastComment)
@@ -252,13 +260,13 @@ class Assembler
                 @outp.puts(formatDump("OFFLINE_ASM_OPCODE_LABEL(op_#{$~.post_match})", lastComment))
             else
                 label = "llint_" + "op_#{$~.post_match}"
-                @outp.puts(formatDump("  _#{label}:", lastComment))
+                @outp.puts(formatDump("  _#{label}::", lastComment))
             end            
         else
             if !$emitWinAsm
                 @outp.puts(formatDump("OFFLINE_ASM_GLUE_LABEL(#{labelName})", lastComment))
             else
-                @outp.puts(formatDump("  _#{labelName}:", lastComment))
+                @outp.puts(formatDump("  _#{labelName}::", lastComment))
             end
         end
         if $emitELFDebugDirectives
@@ -363,7 +371,7 @@ end.parse!
 begin
     configurationList = offsetsAndConfigurationIndexForVariants(offsetsFile, variants)
 rescue MissingMagicValuesException
-    $stderr.puts "offlineasm: No magic values found. Skipping assembly file generation."
+    $stderr.puts "offlineasm: No magic values found in #{offsetsFile}. Skipping assembly file generation."
     exit 1
 end
 

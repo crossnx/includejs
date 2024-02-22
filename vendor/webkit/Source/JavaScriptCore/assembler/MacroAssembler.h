@@ -59,7 +59,6 @@
 #define TARGET_ASSEMBLER ARMv7Assembler
 #define TARGET_MACROASSEMBLER MacroAssemblerARMv7
 #include "MacroAssemblerARMv7.h"
-namespace JSC { typedef MacroAssemblerARMv7 MacroAssemblerBase; };
 
 #elif CPU(ARM64E)
 #define TARGET_ASSEMBLER ARM64EAssembler
@@ -70,11 +69,6 @@ namespace JSC { typedef MacroAssemblerARMv7 MacroAssemblerBase; };
 #define TARGET_ASSEMBLER ARM64Assembler
 #define TARGET_MACROASSEMBLER MacroAssemblerARM64
 #include "MacroAssemblerARM64.h"
-
-#elif CPU(MIPS)
-#define TARGET_ASSEMBLER MIPSAssembler
-#define TARGET_MACROASSEMBLER MacroAssemblerMIPS
-#include "MacroAssemblerMIPS.h"
 
 #elif CPU(X86_64)
 #define TARGET_ASSEMBLER X86Assembler
@@ -185,11 +179,13 @@ public:
     using MacroAssemblerBase::urshift32;
     using MacroAssemblerBase::xor32;
 
+#if CPU(ARM64) || CPU(X86_64) || CPU(RISCV64) || CPU(ARM_THUMB2)
+    using MacroAssemblerBase::convertInt32ToDouble;
+#endif
 #if CPU(ARM64) || CPU(X86_64) || CPU(RISCV64)
     using MacroAssemblerBase::and64;
     using MacroAssemblerBase::or64;
     using MacroAssemblerBase::xor64;
-    using MacroAssemblerBase::convertInt32ToDouble;
     using MacroAssemblerBase::store64;
 #endif
 
@@ -550,7 +546,11 @@ public:
     // consumes some register in some way.
     void retVoid() { ret(); }
     void ret32(RegisterID) { ret(); }
+#if CPU(ARM_THUMB2)
+    void ret64(RegisterID, RegisterID) { ret(); }
+#else
     void ret64(RegisterID) { ret(); }
+#endif
     void retFloat(FPRegisterID) { ret(); }
     void retDouble(FPRegisterID) { ret(); }
 
@@ -2260,6 +2260,24 @@ public:
     void print(Arguments&&... args);
 
     void print(Printer::PrintRecordList*);
+
+    template<PtrTag tag>
+    void nearCallThunk(CodeLocationLabel<tag> label)
+    {
+        nearCall().linkThunk(label, this);
+    }
+
+    template<PtrTag tag>
+    void nearTailCallThunk(CodeLocationLabel<tag> label)
+    {
+        nearTailCall().linkThunk(label, this);
+    }
+
+    template<PtrTag tag>
+    void jumpThunk(CodeLocationLabel<tag> label)
+    {
+        jump().linkThunk(label, this);
+    }
 };
 
 } // namespace JSC

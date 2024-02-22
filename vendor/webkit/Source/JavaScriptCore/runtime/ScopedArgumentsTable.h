@@ -74,7 +74,7 @@ public:
     }
     
     ScopedArgumentsTable* trySet(VM&, uint32_t index, ScopeOffset);
-
+    
     DECLARE_INFO;
     
     static Structure* createStructure(VM&, JSGlobalObject*, JSValue prototype);
@@ -90,7 +90,7 @@ private:
     ScopeOffset& at(uint32_t i) const
     {
         ASSERT_WITH_SECURITY_IMPLICATION(i < m_length);
-        return m_arguments.get(length())[i];
+        return m_arguments.get()[i];
     }
     
     uint32_t m_length;

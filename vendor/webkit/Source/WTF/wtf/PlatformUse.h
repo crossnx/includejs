@@ -70,7 +70,7 @@
 #define USE_GLIB 1
 #endif
 
-#if PLATFORM(GTK) || PLATFORM(WPE)
+#if PLATFORM(GTK) || (PLATFORM(WPE) && !USE(SKIA))
 #define USE_FREETYPE 1
 #endif
 
@@ -80,10 +80,6 @@
 
 #if PLATFORM(GTK) || PLATFORM(WPE)
 #define USE_SOUP 1
-#endif
-
-#if PLATFORM(GTK) || PLATFORM(WPE)
-#define USE_WEBP 1
 #endif
 
 #if PLATFORM(COCOA)
@@ -263,11 +259,6 @@
 #define USE_CFNETWORK_CONTENT_ENCODING_SNIFFING_OVERRIDE 1
 #endif
 
-#if PLATFORM(MAC) || USE(THEME_ADWAITA)
-/* FIXME: This really needs a descriptive name, this "new theme" was added in 2008. */
-#define USE_NEW_THEME 1
-#endif
-
 #if PLATFORM(IOS) || PLATFORM(MACCATALYST) || PLATFORM(VISION)
 #define USE_UICONTEXTMENU 1
 #endif
@@ -311,8 +302,16 @@
 #define USE_FONT_VARIANT_VIA_FEATURES 1
 #define USE_OPENXR 0
 #if !defined(HAVE_WEBXR_INTERNALS) && !HAVE(WEBXR_INTERNALS)
+#if PLATFORM(IOS) && HAVE(ARKIT)
+#define USE_ARKITXR_IOS 1
+#else
 #define USE_EMPTYXR 1
 #endif
+#endif
+#endif
+
+#if PLATFORM(COCOA)
+#define USE_CG_CONTEXT_STROKE_LINE_SEGMENTS_WHEN_STROKING_PATH 1
 #endif
 
 #if PLATFORM(IOS_FAMILY)
@@ -321,6 +320,29 @@
 
 #if !defined(USE_ISO_MALLOC)
 #define USE_ISO_MALLOC 1
+#endif
+
+#if !defined(USE_TZONE_MALLOC)
+#if CPU(ARM64) && OS(DARWIN)
+// Only MacroAssemblerARM64 is known to build.
+// Building with TZONE_MALLOC currently disabled for all platforms.
+#define USE_TZONE_MALLOC 0
+#else
+#define USE_TZONE_MALLOC 0
+#endif
+#endif
+
+#if OS(DARWIN) && USE(APPLE_INTERNAL_SDK) && USE(TZONE_MALLOC)
+#define USE_DARWIN_TZONE_SEED 1
+#endif
+
+#if !defined(USE_WK_TZONE_MALLOC)
+#if USE(TZONE_MALLOC)
+// Separately control the use of TZone allocation in WebKit
+#define USE_WK_TZONE_MALLOC 1
+#else
+#define USE_WK_TZONE_MALLOC 0
+#endif
 #endif
 
 #if !PLATFORM(WATCHOS)
@@ -401,4 +423,25 @@
     || (PLATFORM(APPLETV) && __TV_OS_VERSION_MAX_ALLOWED < 170000) \
     || (PLATFORM(WATCHOS) && __WATCH_OS_VERSION_MAX_ALLOWED < 100000)
 #define USE_CORE_TEXT_VARIATIONS_CLAMPING_WORKAROUND 1
+#endif
+
+// FIXME: Once this is forwarded to 18+, we should remove the max check.
+#if PLATFORM(IOS) && !PLATFORM(IOS_FAMILY_SIMULATOR) \
+    && __IPHONE_OS_VERSION_MAX_ALLOWED >= 170400 \
+    && __IPHONE_OS_VERSION_MAX_ALLOWED < 180000
+#if CPU(ARM64E)
+#define USE_INLINE_JIT_PERMISSIONS_API 1
+#endif
+#endif
+
+#if (PLATFORM(MAC) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 140000) \
+    || ((PLATFORM(IOS) || PLATFORM(MACCATALYST)) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 170000) \
+    || (PLATFORM(WATCHOS) && __WATCH_OS_VERSION_MIN_REQUIRED >= 100000) \
+    || (PLATFORM(APPLETV) && __TV_OS_VERSION_MIN_REQUIRED >= 170000) \
+    || PLATFORM(VISION)
+#define USE_SANDBOX_VERSION_3 1
+#endif
+
+#if !defined(USE_BROWSERENGINEKIT) && PLATFORM(IOS) && __has_include(<BrowserEngineKit/BETextInput.h>)
+#define USE_BROWSERENGINEKIT 1
 #endif

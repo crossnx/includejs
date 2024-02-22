@@ -25,7 +25,7 @@
 
 #pragma once
 
-#if ENABLE(B3_JIT)
+#if ENABLE(B3_JIT) || ENABLE(WEBASSEMBLY_BBQJIT)
 
 #include "B3Common.h"
 #include "SIMDInfo.h"
@@ -77,7 +77,7 @@ public:
     inline bool isTuple() const;
     inline bool isVector() const;
 
-    friend bool operator==(Type, Type) = default;
+    friend bool operator==(const Type&, const Type&) = default;
 
 private:
     TypeKind m_kind { Void };
