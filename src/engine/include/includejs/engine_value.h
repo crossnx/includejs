@@ -12,7 +12,7 @@
 
 namespace includejs {
 
-enum class JSValueType {
+enum class ValueType {
   Number,
   String,
   Error,
@@ -54,7 +54,7 @@ public:
   auto to_string() const -> std::string;
   auto to_boolean() const -> bool;
   auto to_function() const -> Function;
-  auto type() const -> JSValueType;
+  auto type() const -> ValueType;
   auto at(const std::string &property) const -> std::optional<Value>;
   auto at(const unsigned int &position) const -> std::optional<Value>;
   auto set(const std::string &property, Value value) -> void;
