@@ -5,6 +5,11 @@
   <a href="https://github.com/crossnx/includejs/actions/workflows/ci.yml"><img src="https://github.com/crossnx/includejs/actions/workflows/ci.yml/badge.svg" alt="github action build"></a>
 </p>
 
+<p align="center">
+    <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=8107db3b-fcee-4af8-81f0-14e29ec04430" />
+    <a href="www.includejs.org/">📖 Documentation</a>
+</p>
+
 `includejs` aims to provide an unified API to build your own JavaScript runtime.
 
 ## Features
