@@ -82,6 +82,32 @@ Value::~Value() {}
 
 Value::Value(Value &&other) noexcept : internal{std::move(other.internal)} {}
 
+auto Value::type() const -> ValueType {
+  if (is_number()) {
+    return ValueType::Number;
+  } else if (is_string()) {
+    return ValueType::String;
+  } else if (is_error()) {
+    return ValueType::Error;
+  } else if (is_function()) {
+    return ValueType::Function;
+  } else if (is_array()) {
+    return ValueType::Array;
+  } else if (is_object()) {
+    return ValueType::Object;
+  } else if (is_boolean()) {
+    return ValueType::Boolean;
+  } else if (is_undefined()) {
+    return ValueType::Undefined;
+  } else if (is_null()) {
+    return ValueType::Null;
+  } else if (is_function()) {
+    return ValueType::Function;
+  } else {
+    return ValueType::Unknown;
+  }
+}
+
 auto Value::is_number() const -> bool {
   return JSValueIsNumber(this->internal->context, this->internal->value);
 }
