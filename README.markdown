@@ -10,7 +10,7 @@
     <a href="www.includejs.org/">📖 Documentation</a>
 </p>
 
-`includejs` aims to provide an unified API to build your own JavaScript runtime.
+`includejs` offers a unified API for building your own JavaScript runtime, bridging multiple engines and platforms with ease.
 
 ## Features
 
@@ -18,7 +18,7 @@
 - Cross platform support
 - Direclty consumable from `CMake`
 
-> Note: These lists are not exhaustive, we'll add new items very soon.
+> 🤙 Stay tuned as we continue to expand our feature set.
 
 ### JavasScript
 
