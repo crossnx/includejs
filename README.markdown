@@ -12,6 +12,13 @@
 
 `includejs` offers a unified API for building your own JavaScript runtime, bridging multiple engines and platforms with ease.
 
+## Example
+
+In our journey to enhance `includejs`, we've also developed small - a minimalist, experimental runtime
+aimed to provide ground for concepts and features we're considering for it.
+
+Hosted on GitHub at [`crossnx/small`](https://github.com/crossnx/small).
+
 ## Features
 
 - Multiple runtime support: `JavascriptCore`, `v8` (more in the furture)
