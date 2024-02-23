@@ -11,6 +11,7 @@ add_executable(includejs_engine_unit
   engine_value_array_test.cc
   engine_value_function_test.cc
   engine_value_undefined_test.cc
+  engine_value_type_test.cc
   engine_value_null_test.cc)
 
 includejs_add_compile_options(includejs_engine_unit)

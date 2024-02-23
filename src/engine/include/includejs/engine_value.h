@@ -12,6 +12,19 @@
 
 namespace includejs {
 
+enum class JSValueType {
+  Number,
+  String,
+  Error,
+  Object,
+  Boolean,
+  Undefined,
+  Null,
+  Array,
+  Function,
+  Unknown
+};
+
 // Inspired by https://github.com/sourcemeta/jsontoolkit
 /// @ingroup engine
 class INCLUDEJS_ENGINE_EXPORT Value {
@@ -41,6 +54,7 @@ public:
   auto to_string() const -> std::string;
   auto to_boolean() const -> bool;
   auto to_function() const -> Function;
+  auto type() const -> JSValueType;
   auto at(const std::string &property) const -> std::optional<Value>;
   auto at(const unsigned int &position) const -> std::optional<Value>;
   auto set(const std::string &property, Value value) -> void;
