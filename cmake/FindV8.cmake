@@ -6,10 +6,15 @@ if(NOT V8_FOUND)
     # downloaded from Homebrew.
     # Refs: https://github.com/Homebrew/homebrew-core/issues/45061#issuecomment-541420664
     set(V8_VERSION "12.1.285.24")
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+      set(HOMEBREW_CELLAR "/opt/homebrew/Cellar")
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+      set(HOMEBREW_CELLAR "/usr/local/Cellar")
+    endif()
     target_include_directories(v8
-      INTERFACE "/usr/local/Cellar/v8/${V8_VERSION}/include")
+      INTERFACE "${HOMEBREW_CELLAR}/v8/${V8_VERSION}/include")
     target_link_directories(v8
-      INTERFACE "/usr/local/Cellar/v8/${V8_VERSION}/lib")
+      INTERFACE "${HOMEBREW_CELLAR}/v8/${V8_VERSION}/lib")
     target_link_libraries(v8 INTERFACE "-lv8")
     target_link_libraries(v8 INTERFACE "-lv8_libplatform")
     target_compile_definitions(v8
