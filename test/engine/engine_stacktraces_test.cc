@@ -1,20 +1,19 @@
 #include <gtest/gtest.h>
 
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 #include <filesystem>
 #include <string>
 
 TEST(IncludeJS_Engine, unknown_global_function) {
-  sourcemeta::includejs::Engine engine;
+  includejs::Engine engine;
   try {
     engine.evaluate("this_does_not_exist()", "index.js");
     FAIL();
-  } catch (const sourcemeta::includejs::Error &error) {
+  } catch (const includejs::Error &error) {
     EXPECT_EQ(std::string{error.what()},
               "Can't find variable: this_does_not_exist");
-    const std::vector<sourcemeta::includejs::Frame> stacktrace{error.begin(),
-                                                               error.end()};
+    const std::vector<includejs::Frame> stacktrace{error.begin(), error.end()};
     EXPECT_EQ(stacktrace.size(), 1);
     EXPECT_FALSE(stacktrace.at(0).scope.has_value());
     EXPECT_TRUE(stacktrace.at(0).path.has_value());

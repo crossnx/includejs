@@ -1,15 +1,15 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_H_
+#ifndef INCLUDEJS_ENGINE_H_
+#define INCLUDEJS_ENGINE_H_
 
 /// @defgroup engine Engine
 /// @brief The IncludeJS higher-level abstraction of a JavaScript engine
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_context.h>
-#include <sourcemeta/includejs/engine_error.h>
-#include <sourcemeta/includejs/engine_function.h>
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_context.h>
+#include <includejs/engine_error.h>
+#include <includejs/engine_function.h>
+#include <includejs/engine_value.h>
 
 #include <filesystem>       // std::filesystem::path
 #include <initializer_list> // std::initializer_list
@@ -20,11 +20,10 @@
 #include <string>           // std::string
 #include <vector>           // std::vector
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Engine {
+class INCLUDEJS_ENGINE_EXPORT Engine {
 public:
   Engine();
   ~Engine();
@@ -35,8 +34,11 @@ public:
   auto evaluate(std::ifstream &stream, const std::filesystem::path &path)
       -> Value;
 
+  // TODO(RaisinTen): Add support for bind_function() to the V8 backend.
+#if !defined(INCLUDEJS_ENGINE_V8)
   auto bind_function(std::initializer_list<std::string> location,
                      Function function) -> void;
+#endif
   auto bind_global(std::initializer_list<std::string> location, Value value)
       -> void;
   auto bind_global(std::initializer_list<std::string> location, bool value)
@@ -55,6 +57,5 @@ private:
 };
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

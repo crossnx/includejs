@@ -1,6 +1,7 @@
-#include <sourcemeta/includejs/engine_context.h>
+#include <includejs/engine_context.h>
 
-namespace sourcemeta {
+#if !defined(INCLUDEJS_ENGINE_V8)
+
 namespace includejs {
 
 auto Context::from(int value) const -> Value {
@@ -13,4 +14,5 @@ auto Context::from(const std::string &value) const -> Value {
 }
 
 } // namespace includejs
-} // namespace sourcemeta
+
+#endif

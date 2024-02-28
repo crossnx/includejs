@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine_context.h>
+#include <includejs/engine_context.h>
 
 extern "C" {
 #include <JavaScriptCore/JavaScript.h>
@@ -6,7 +6,6 @@ extern "C" {
 
 #include <cassert> // assert
 
-namespace sourcemeta {
 namespace includejs {
 
 struct Context::Internal {
@@ -59,6 +58,11 @@ auto Context::make_object() const -> Value {
   return {this->internal->context, res};
 }
 
+auto Context::make_array() const -> Value {
+  return {this->internal->context,
+          JSObjectMakeArray(this->internal->context, 0, nullptr, nullptr)};
+}
+
 auto Context::make_promise() const -> Promise {
   return {static_cast<const void *>(this->internal->context)};
 }
@@ -80,9 +84,12 @@ auto Context::from(const char *value) const -> Value {
   return {this->internal->context, result};
 }
 
+auto Context::from(std::nullptr_t) const -> Value {
+  return {this->internal->context, JSValueMakeNull(this->internal->context)};
+}
+
 auto Context::global() const -> Value {
   return {this->internal->context, this->internal->global};
 }
 
 } // namespace includejs
-} // namespace sourcemeta

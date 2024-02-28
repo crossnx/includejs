@@ -1,31 +1,29 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_FUNCTION_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_FUNCTION_H_
+#ifndef INCLUDEJS_ENGINE_FUNCTION_H_
+#define INCLUDEJS_ENGINE_FUNCTION_H_
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_context.h>
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_context.h>
+#include <includejs/engine_value.h>
 
-#if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
+#if defined(INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
 #include <exception> // std::exception
 #include <vector>    // std::vector
 #endif
 
 #ifdef DOXYGEN
 /// @ingroup engine
-#define SOURCEMETA_INCLUDEJS_ARGS
+#define INCLUDEJS_ARGS
 #else
 #if __cplusplus >= 202002L
 #include <span> // std::span
-#define SOURCEMETA_INCLUDEJS_ARGS std::span<sourcemeta::includejs::Value>
+#define INCLUDEJS_ARGS std::span<includejs::Value>
 #else
-#define SOURCEMETA_INCLUDEJS_ARGS                                              \
-  const std::vector<sourcemeta::includejs::Value> &
+#define INCLUDEJS_ARGS const std::vector<includejs::Value> &
 #endif
 #endif
 
-#if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
-namespace sourcemeta {
+#if defined(INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
 namespace includejs {
 // This is a opaque function signature that can be force-casted into
 // JSObjectCallAsFunctionCallback
@@ -33,15 +31,14 @@ namespace includejs {
 using Function = const void *(*)(const void *, const void *, const void *,
                                  const size_t, const void *[], const void **);
 } // namespace includejs
-} // namespace sourcemeta
 #endif
 
-#if defined(SOURCEMETA_INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
-#define __SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, call_as)     \
+#if defined(INCLUDEJS_ENGINE_JAVASCRIPT_CORE)
+#define _INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, call_as)                 \
   static const void *function(const void *context, const void *, const void *, \
                               const size_t argc, const void *raw_arguments[],  \
                               const void **exception) {                        \
-    std::vector<::sourcemeta::includejs::Value> arguments;                     \
+    std::vector<::includejs::Value> arguments;                                 \
     arguments.reserve(argc);                                                   \
     for (std::size_t index = 0; index < argc; index++) {                       \
       arguments.emplace_back(context, raw_arguments[index]);                   \
@@ -49,7 +46,7 @@ using Function = const void *(*)(const void *, const void *, const void *,
     try {                                                                      \
       return call_as({context}, arguments).native();                           \
     } catch (const std::exception &error) {                                    \
-      const ::sourcemeta::includejs::Context ignition_context{context};        \
+      const ::includejs::Context ignition_context{context};                    \
       *exception = ignition_context.make_error(error.what()).native();         \
       return ignition_context.make_undefined().native();                       \
     }                                                                          \
@@ -58,15 +55,15 @@ using Function = const void *(*)(const void *, const void *, const void *,
 
 #ifdef DOXYGEN
 /// @ingroup engine
-#define SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(function)
+#define INCLUDEJS_EXPOSE_FUNCTION(function)
 /// @ingroup engine
-#define SOURCEMETA_INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)
+#define INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)
 #else
-#define SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION(function)                         \
-  __SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function)
-#define SOURCEMETA_INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)                \
+#define INCLUDEJS_EXPOSE_FUNCTION(function)                                    \
+  _INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function)
+#define INCLUDEJS_EXPOSE_TEMPLATE_FUNCTION(function)                           \
   template <typename... Args>                                                  \
-  __SOURCEMETA_INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function<Args...>)
+  _INCLUDEJS_EXPOSE_FUNCTION_INTERNAL(function, function<Args...>)
 #endif
 
 #endif

@@ -1,19 +1,18 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_CONTEXT_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_CONTEXT_H_
+#ifndef INCLUDEJS_ENGINE_CONTEXT_H_
+#define INCLUDEJS_ENGINE_CONTEXT_H_
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_promise.h>
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_promise.h>
+#include <includejs/engine_value.h>
 
 #include <memory> // std::unique_ptr
 #include <string> // std::string
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Context {
+class INCLUDEJS_ENGINE_EXPORT Context {
 public:
   // Consumers are not meant to create this class directly
 #ifndef DOXYGEN
@@ -24,6 +23,7 @@ public:
   auto make_error(const std::string &message) const -> Value;
   auto make_object() const -> Value;
   auto make_promise() const -> Promise;
+  auto make_array() const -> Value;
   auto from(const std::string &value) const -> Value;
   auto from(const char *) const -> Value;
   auto from(int value) const -> Value;
@@ -38,6 +38,5 @@ private:
 };
 
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

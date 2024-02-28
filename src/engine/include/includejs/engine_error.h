@@ -1,5 +1,5 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_ERROR_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_ERROR_H_
+#ifndef INCLUDEJS_ENGINE_ERROR_H_
+#define INCLUDEJS_ENGINE_ERROR_H_
 
 #include "engine_export.h"
 
@@ -9,11 +9,9 @@
 #include <string>     // std::string
 #include <vector>     // std::vector
 
-namespace sourcemeta {
 namespace includejs {
-
 /// @ingroup engine
-struct SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Frame {
+struct INCLUDEJS_ENGINE_EXPORT Frame {
   const std::optional<std::string> scope;
   const std::optional<std::filesystem::path> path;
   const unsigned long long line;
@@ -21,7 +19,7 @@ struct SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Frame {
 };
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Error : public std::exception {
+class INCLUDEJS_ENGINE_EXPORT Error : public std::exception {
 private:
   using FrameContainer = std::vector<Frame>;
 
@@ -35,8 +33,6 @@ private:
   const std::string message;
   const FrameContainer stacktrace;
 };
-
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif

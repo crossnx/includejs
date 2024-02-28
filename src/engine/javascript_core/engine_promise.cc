@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine_promise.h>
+#include <includejs/engine_promise.h>
 
 extern "C" {
 #include <JavaScriptCore/JavaScript.h>
@@ -6,7 +6,6 @@ extern "C" {
 
 #include <cassert> // assert
 
-namespace sourcemeta {
 namespace includejs {
 
 struct Promise::Internal {
@@ -54,4 +53,3 @@ auto Promise::value() -> Value {
 }
 
 } // namespace includejs
-} // namespace sourcemeta

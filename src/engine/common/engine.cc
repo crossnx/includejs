@@ -1,4 +1,4 @@
-#include <sourcemeta/includejs/engine.h>
+#include <includejs/engine.h>
 
 #include <cassert>   // assert
 #include <fstream>   // std::ifstream
@@ -8,7 +8,8 @@
 #include <utility>   // std::move
 #include <vector>    // std::vector
 
-namespace sourcemeta {
+#if !defined(INCLUDEJS_ENGINE_V8)
+
 namespace includejs {
 
 // For convenience
@@ -84,4 +85,5 @@ auto Engine::on_error(const Value &exception) -> void {
 }
 
 } // namespace includejs
-} // namespace sourcemeta
+
+#endif

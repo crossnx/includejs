@@ -1,17 +1,16 @@
-#ifndef SOURCEMETA_INCLUDEJS_ENGINE_PROMISE_H_
-#define SOURCEMETA_INCLUDEJS_ENGINE_PROMISE_H_
+#ifndef INCLUDEJS_ENGINE_PROMISE_H_
+#define INCLUDEJS_ENGINE_PROMISE_H_
 
 #include "engine_export.h"
 
-#include <sourcemeta/includejs/engine_value.h>
+#include <includejs/engine_value.h>
 
 #include <memory> // std::unique_ptr
 
-namespace sourcemeta {
 namespace includejs {
 
 /// @ingroup engine
-class SOURCEMETA_INCLUDEJS_ENGINE_EXPORT Promise {
+class INCLUDEJS_ENGINE_EXPORT Promise {
 public:
   // Consumers are not meant to create this class directly
 #ifndef DOXYGEN
@@ -27,8 +26,6 @@ private:
   std::unique_ptr<Internal> internal;
   bool completed{false};
 };
-
 } // namespace includejs
-} // namespace sourcemeta
 
 #endif
