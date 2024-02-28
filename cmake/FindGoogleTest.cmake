@@ -8,4 +8,4 @@ endif()
 
 # We want to disable the unsigned shift base sanitizer for gtest
 # because it triggers on the gtest code.
-target_compile_options(gtest PRIVATE -fno-sanitize=unsigned-shift-base)
+target_compile_options(gtest PRIVATE "-fno-sanitize=unsigned-shift-base")
