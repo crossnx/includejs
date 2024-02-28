@@ -1,2 +1,0 @@
-shift-base:hash.h
-shift-exponent:hash.h
