@@ -6,11 +6,6 @@ if(NOT GoogleTest_FOUND)
   set(GoogleTest_FOUND ON)
 endif()
 
-get_cmake_property(_variableNames VARIABLES)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
-
 # We want to disable the unsigned shift base sanitizer for gtest
 # because it triggers on the gtest code.
 if(INCLUDEJS_UNDEFINED_SANITIZER)
