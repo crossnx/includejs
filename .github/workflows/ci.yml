@@ -60,6 +60,18 @@ jobs:
             type: static
             options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
             backend: JavaScriptCore
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+            type: static
+            options: -DINCLUDEJS_ADDRESS_SANITIZER:BOOL=ON
+            backend: JavaScriptCore
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+            type: static
+            options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
+            backend: JavaScriptCore
 
     runs-on: ${{ matrix.platform.os }}
     env:
