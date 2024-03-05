@@ -1,3 +1,4 @@
+#include <includejs/engine_private_data.h>
 #include <includejs/engine_value.h>
 
 extern "C" {
@@ -268,10 +269,11 @@ auto Value::set(const std::string &name, Function cpp_function) -> void {
          JSObjectRef this_object, size_t argc, const JSValueRef args[],
          JSValueRef * /* *exception */) -> JSValueRef {
     // First we need to retrieve the C++ function from the parent object.
-    auto *function_store =
-        static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(this_object));
-    assert(function_store != nullptr);
-    Function &retrieved_cpp_function = function_store->at(function_ref);
+    auto *private_data =
+        static_cast<PrivateObjectData *>(JSObjectGetPrivate(this_object));
+    assert(private_data != nullptr);
+    Function &retrieved_cpp_function =
+        private_data->functions->at(function_ref);
 
     // Then, we create a vector of Value arguments.
     std::vector<Value> arguments;
@@ -299,17 +301,16 @@ auto Value::set(const std::string &name, Function cpp_function) -> void {
 
   // Retrieve the existing function store from the parent object.
   // If it doesn't exist, create a new one.
-  auto existing_function_store =
-      static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(parent_obj));
-  if (existing_function_store == nullptr) {
-    existing_function_store = new Value::FunctionStorage{};
+  auto private_data =
+      static_cast<PrivateObjectData *>(JSObjectGetPrivate(parent_obj));
+  if (private_data == nullptr) {
+    private_data = new PrivateObjectData{};
   }
-  existing_function_store->emplace(function_obj_ref, std::move(cpp_function));
+  private_data->functions->emplace(function_obj_ref, std::move(cpp_function));
 
   // Store the cpp_function in a private field of the parent object
   // so we can retrieve it later.
-  bool is_function_stored =
-      JSObjectSetPrivate(parent_obj, existing_function_store);
+  bool is_function_stored = JSObjectSetPrivate(parent_obj, private_data);
   (void)is_function_stored; // Avoid unused variable warning (in release mode.)
   assert(is_function_stored);
 
@@ -318,6 +319,41 @@ auto Value::set(const std::string &name, Function cpp_function) -> void {
 
   // Release the function name.
   JSStringRelease(function_name_ref);
+}
+
+auto Value::private_data(void *data, std::function<void(void *)> deleter)
+    -> void {
+  assert(is_object());
+
+  // Get the parent object
+  JSValueRef exception = nullptr;
+  JSObjectRef parent_obj = JSValueToObject(this->internal->context,
+                                           this->internal->value, &exception);
+  assert(!exception);
+
+  auto *private_data =
+      static_cast<PrivateObjectData *>(JSObjectGetPrivate(parent_obj));
+  if (private_data == nullptr) {
+    private_data = new PrivateObjectData{};
+  }
+
+  private_data->set_data(data, std::move(deleter));
+  JSObjectSetPrivate(parent_obj, private_data);
+}
+
+auto Value::private_data() -> void * {
+  assert(is_object());
+
+  // Get the parent object
+  JSValueRef exception = nullptr;
+  JSObjectRef parent_obj = JSValueToObject(this->internal->context,
+                                           this->internal->value, &exception);
+  assert(!exception);
+
+  auto *private_data =
+      static_cast<PrivateObjectData *>(JSObjectGetPrivate(parent_obj));
+  assert(private_data != nullptr);
+  return private_data->data();
 }
 
 auto Value::to_map() const -> std::map<std::string, Value> {

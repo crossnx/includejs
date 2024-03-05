@@ -16,7 +16,7 @@ endif()
 
 noa_library(PROJECT includejs NAME engine
   FOLDER "IncludeJS/Engine"
-  PRIVATE_HEADERS context.h function.h error.h promise.h value.h
+  PRIVATE_HEADERS context.h function.h error.h promise.h value.h private_data.h
   SOURCES ${INCLUDEJS_ENGINE_SOURCES})
 
 if(INCLUDEJS_INSTALL)

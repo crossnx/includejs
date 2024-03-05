@@ -2,6 +2,8 @@
 
 #include <includejs/engine.h>
 
+#include <future> // std::promise, std::future
+
 TEST(IncludeJS_Engine, create_object) {
   includejs::Engine engine;
 
@@ -71,4 +73,38 @@ TEST(IncludeJS_Engine, at_throw_for_functions) {
     return std::move(args[0]);
   });
   EXPECT_THROW(obj.at("woo"), std::runtime_error);
+}
+
+TEST(IncludeJS_Engine, set_and_get_private_data) {
+  auto str = new std::string("one");
+
+  includejs::Engine ignition;
+  includejs::Value object{ignition.context().make_object()};
+  object.private_data(
+      str, [](void *data) { delete static_cast<std::string *>(data); });
+
+  EXPECT_EQ(object.private_data(), str);
+}
+
+TEST(IncludeJS_Engine, double_set_private_data) {
+  auto str1 = new std::string("one");
+  auto str2 = new std::string("two");
+  std::promise<void> promise;
+  std::future<void> future = promise.get_future();
+
+  includejs::Engine ignition;
+  includejs::Value object{ignition.context().make_object()};
+  object.private_data(str1, [&str1, &promise](void *data) {
+    EXPECT_EQ(static_cast<std::string *>(data), str1);
+    delete static_cast<std::string *>(data);
+    promise.set_value();
+  });
+  // We add this one, in case the object is cleared properly
+  object.private_data(str2, [&str2](void *data) {
+    EXPECT_EQ(static_cast<std::string *>(data), str2);
+    delete static_cast<std::string *>(data);
+  });
+
+  future.wait();
+  EXPECT_EQ(object.private_data(), str2);
 }

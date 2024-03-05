@@ -1,4 +1,5 @@
 #include <includejs/engine_context.h>
+#include <includejs/engine_private_data.h>
 
 extern "C" {
 #include <JavaScriptCore/JavaScript.h>
@@ -41,13 +42,14 @@ auto Context::make_error(const std::string &message) const -> Value {
 }
 
 auto Context::make_object() const -> Value {
-  // Create a class definition to be able to set private data on the object.
+  // We habe to create a class definition to be able to
+  // attach private data to the object.
   JSClassDefinition class_def = kJSClassDefinitionEmpty;
   class_def.finalize = [](JSObjectRef object) {
-    auto *function_ptr =
-        static_cast<Value::FunctionStorage *>(JSObjectGetPrivate(object));
-    if (function_ptr != nullptr) {
-      delete function_ptr;
+    auto *private_data =
+        static_cast<PrivateObjectData *>(JSObjectGetPrivate(object));
+    if (private_data != nullptr) {
+      delete private_data;
     }
   };
   JSClassRef empty_class = JSClassCreate(&class_def);

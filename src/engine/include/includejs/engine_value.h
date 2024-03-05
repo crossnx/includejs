@@ -59,6 +59,8 @@ public:
   auto at(const unsigned int &position) const -> std::optional<Value>;
   auto set(const std::string &property, Value value) -> void;
   auto set(const std::string &property, Function function) -> void;
+  auto private_data() -> void *;
+  auto private_data(void *data, std::function<void(void *)> deleter) -> void;
   auto push(Value value) -> void;
   auto to_map() const -> std::map<std::string, Value>;
   auto to_vector() const -> std::vector<Value>;
