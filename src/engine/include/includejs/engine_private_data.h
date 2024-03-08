@@ -12,33 +12,20 @@ namespace includejs {
 // Inspired by https://github.com/sourcemeta/jsontoolkit
 /// @ingroup engine
 struct INCLUDEJS_ENGINE_EXPORT PrivateObjectData {
-  std::unique_ptr<std::map<void *, Value::Function>> functions;
+  std::unique_ptr<std::map<void *, Value::Function>> functions =
+      std::make_unique<std::map<void *, Value::Function>>();
 
-  PrivateObjectData() {
-    functions = std::make_unique<std::map<void *, Value::Function>>();
-  }
+  ~PrivateObjectData();
 
-  auto data() -> void * { return data_; }
-
+  auto data() -> void *;
   auto set_data(void *new_data, std::function<void(void *)> new_deleter)
-      -> void {
-    clear();
-    data_ = new_data;
-    deleter_ = new_deleter;
-  }
-
-  ~PrivateObjectData() { clear(); }
+      -> void;
 
 private:
   void *data_ = nullptr;
   std::function<void(void *)> deleter_;
 
-  auto clear() -> void {
-    if (data_ != nullptr && deleter_ != nullptr) {
-      deleter_(data_);
-      data_ = nullptr;
-    }
-  }
+  auto clear() -> void;
 };
 
 } // namespace includejs
