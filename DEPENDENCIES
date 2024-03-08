@@ -1,3 +1,4 @@
 vendorpull https://github.com/sourcemeta/vendorpull 70342aaf458e6cb80baeb5b718901075fc42ede6
 noa https://github.com/sourcemeta/noa 9da0f1877859f60e439e31856cd4ef5fd4ca6063
 googletest https://github.com/google/googletest 987e225614755fec7253aa95bf959c09e0d380d7
+webkitgtk https://github.com/WebKit/WebKit webkitgtk-2.43.4
