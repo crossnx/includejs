@@ -8,6 +8,7 @@ if(INCLUDEJS_BACKEND STREQUAL "JavaScriptCore")
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_context.cc)
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_promise.cc)
   list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_value.cc)
+  list(APPEND INCLUDEJS_ENGINE_SOURCES javascript_core/engine_private_data.cc)
 elseif(INCLUDEJS_BACKEND STREQUAL "V8")
   list(APPEND INCLUDEJS_ENGINE_SOURCES v8/engine.cc)
 else()
@@ -16,7 +17,7 @@ endif()
 
 noa_library(PROJECT includejs NAME engine
   FOLDER "IncludeJS/Engine"
-  PRIVATE_HEADERS context.h function.h error.h promise.h value.h
+  PRIVATE_HEADERS context.h function.h error.h promise.h value.h private_data.h
   SOURCES ${INCLUDEJS_ENGINE_SOURCES})
 
 if(INCLUDEJS_INSTALL)
