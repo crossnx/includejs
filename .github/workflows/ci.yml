@@ -90,12 +90,16 @@ jobs:
             type: static
             options: -DINCLUDEJS_ADDRESS_SANITIZER:BOOL=ON
             backend: JavaScriptCore
+            javascriptcore_version: "6.0"
+            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.1
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: static
             options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
             backend: JavaScriptCore
+            javascriptcore_version: "6.0"
+            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.1
           - os: macos-latest
             cc: clang
             cxx: clang++
