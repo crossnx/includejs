@@ -31,57 +31,49 @@ jobs:
             cxx: clang++
             type: static
             backend: JavaScriptCore
-            javascriptcore_version: "4.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.0
+            javascriptcore_api_version: "4.0"
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: static
             backend: JavaScriptCore
-            javascriptcore_version: "4.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.0
+            javascriptcore_api_version: "4.0"
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: shared
             backend: JavaScriptCore
-            javascriptcore_version: "4.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.0
+            javascriptcore_api_version: "4.0"
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: shared
             backend: JavaScriptCore
-            javascriptcore_version: "4.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.0
+            javascriptcore_api_version: "4.0"
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: static
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=6.0
+            javascriptcore_api_version: "6.0"
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: static
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=6.0
+            javascriptcore_api_version: "6.0"
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: shared
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=6.0
+            javascriptcore_api_version: "6.0"
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
             type: shared
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=6.0
+            javascriptcore_api_version: "6.0"
 
           # Sanitizers
           - os: ubuntu-latest
@@ -90,16 +82,14 @@ jobs:
             type: static
             options: -DINCLUDEJS_ADDRESS_SANITIZER:BOOL=ON
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.1
+            javascriptcore_api_version: "4.0"
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
             type: static
             options: -DINCLUDEJS_UNDEFINED_SANITIZER:BOOL=ON
             backend: JavaScriptCore
-            javascriptcore_version: "6.0"
-            options: -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=4.1
+            javascriptcore_api_version: "4.0"
           - os: macos-latest
             cc: clang
             cxx: clang++
@@ -122,7 +112,7 @@ jobs:
         if: runner.os == 'linux'
         run: |
           sudo apt-get update --yes
-          sudo apt-get install --yes clang-format libjavascriptcoregtk-${{ matrix.platform.javascriptcore_version }}-dev
+          sudo apt-get install --yes clang-format libjavascriptcoregtk-${{ matrix.platform.javascriptcore_api_version }}-dev
 
       # See https://github.com/actions/runner-images/issues/8659
       - name: Workaround Clang issue (GNU/Linux)
@@ -145,6 +135,7 @@ jobs:
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
           -DINCLUDEJS_BACKEND:STRING=${{ matrix.platform.backend }}
+          -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=${{ matrix.platform.javascriptcore_api_version }}
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -156,6 +147,7 @@ jobs:
           cmake -S . -B ./build
           -DCMAKE_BUILD_TYPE:STRING=Release
           -DINCLUDEJS_BACKEND:STRING=${{ matrix.platform.backend }}
+          -DINCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION:STRING=${{ matrix.platform.javascriptcore_api_version }}
           -DINCLUDEJS_TESTS:BOOL=ON
           -DINCLUDEJS_DOCS:BOOL=OFF
           -DBUILD_SHARED_LIBS:BOOL=ON
