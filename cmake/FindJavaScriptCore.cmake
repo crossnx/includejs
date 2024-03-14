@@ -41,11 +41,11 @@ if(NOT JavaScriptCore_FOUND)
       # NOTE: this is required since WebkitGTK (which includes JavaScriptCore) only
       # exposes the GLib headers starting in versions after 4.0
       # see: https://github.com/WebKit/WebKit/blob/main/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md#stop-using-deprecated-apis
-      FILE(GLOB headers ${PROJECT_SOURCE_DIR}/vendor/webkitgtk/Source/JavaScriptCore/API/*.h)
-      FOREACH(header ${headers})
+      file(GLOB headers ${PROJECT_SOURCE_DIR}/vendor/webkitgtk/Source/JavaScriptCore/API/*.h)
+      foreach(header ${headers})
         cmake_path(GET header FILENAME header_filename)
         configure_file("${header}" "${PROJECT_BINARY_DIR}/javascriptcore-headers/JavaScriptCore/${header_filename}" COPYONLY)
-      ENDFOREACH()
+      endforeach()
       set_property(TARGET javascript_core PROPERTY
         INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_BINARY_DIR}/javascriptcore-headers")
     endif()
