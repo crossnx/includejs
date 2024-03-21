@@ -6,6 +6,7 @@ extern "C" {
 }
 
 #include <cassert> // assert
+#include <stdexcept>
 
 namespace includejs {
 
