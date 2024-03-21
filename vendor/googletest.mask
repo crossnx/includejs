@@ -2,7 +2,6 @@ googletest/test
 googletest/docs
 googletest/samples
 googletest/README.md
-googlemock
 docs
 ci
 .clang-format

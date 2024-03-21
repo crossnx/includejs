@@ -12,12 +12,13 @@ add_executable(includejs_engine_unit
   engine_value_function_test.cc
   engine_value_undefined_test.cc
   engine_value_type_test.cc
-  engine_value_null_test.cc)
+  engine_value_null_test.cc
+  engine_context_from_json_test.cc)
 
 includejs_add_compile_options(includejs_engine_unit)
 
 target_link_libraries(includejs_engine_unit
-  PRIVATE GTest::gtest GTest::gtest_main)
+  PRIVATE GTest::gtest GTest::gtest_main GTest::gmock)
 target_link_libraries(includejs_engine_unit
   PRIVATE includejs::engine)
 gtest_discover_tests(includejs_engine_unit)
