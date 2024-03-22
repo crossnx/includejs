@@ -13,7 +13,8 @@ add_executable(includejs_engine_unit
   engine_value_undefined_test.cc
   engine_value_type_test.cc
   engine_value_null_test.cc
-  engine_context_from_json_test.cc)
+  engine_context_from_json_test.cc
+  engine_context_to_json_string_test.cc)
 
 includejs_add_compile_options(includejs_engine_unit)
 

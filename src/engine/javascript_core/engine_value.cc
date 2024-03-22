@@ -436,6 +436,35 @@ auto Value::push(Value value) -> void {
   assert(!exception);
 }
 
+auto Value::to_json_string() const -> std::string {
+  assert(is_object());
+
+  JSValueRef exception = nullptr;
+  JSStringRef json_string = JSValueCreateJSONString(
+      this->internal->context, this->internal->value, 0, &exception);
+
+  if (exception) {
+    JSStringRef error_message =
+        JSValueToStringCopy(this->internal->context, exception, nullptr);
+    JSStringRelease(json_string);
+    throw std::runtime_error(js_string_to_std_string(error_message));
+  }
+
+  if (!json_string) {
+    JSStringRelease(json_string);
+    return "";
+  }
+
+  try {
+    std::string result{js_string_to_std_string(json_string)};
+    JSStringRelease(json_string);
+    return result;
+  } catch (const std::exception &) {
+    JSStringRelease(json_string);
+    throw std::runtime_error("Failed to convert to JSON string");
+  }
+}
+
 auto Value::native() const -> const void * {
   return static_cast<const void *>(this->internal->value);
 }
