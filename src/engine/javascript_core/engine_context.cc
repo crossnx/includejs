@@ -6,6 +6,7 @@ extern "C" {
 }
 
 #include <cassert> // assert
+#include <stdexcept>
 
 namespace includejs {
 
@@ -88,6 +89,17 @@ auto Context::from(const char *value) const -> Value {
 
 auto Context::from(std::nullptr_t) const -> Value {
   return {this->internal->context, JSValueMakeNull(this->internal->context)};
+}
+
+auto Context::from_json(const std::string &json_string) const -> Value {
+  JSStringRef json_c_str = JSStringCreateWithUTF8CString(json_string.c_str());
+  JSValueRef result =
+      JSValueMakeFromJSONString(this->internal->context, json_c_str);
+  JSStringRelease(json_c_str);
+  if (result == nullptr) {
+    throw std::invalid_argument("Invalid JSON string");
+  }
+  return {this->internal->context, result};
 }
 
 auto Context::global() const -> Value {

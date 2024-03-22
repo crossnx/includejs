@@ -1,8 +1,8 @@
 if(NOT GoogleTest_FOUND)
-  set(BUILD_GMOCK OFF CACHE BOOL "disable googlemock")
+  include(GoogleTest)
+  set(BUILD_GMOCK ON CACHE BOOL "enable googlemock")
   set(INSTALL_GTEST OFF CACHE BOOL "disable installation")
   add_subdirectory("${PROJECT_SOURCE_DIR}/vendor/googletest")
-  include(GoogleTest)
   set(GoogleTest_FOUND ON)
 endif()
 

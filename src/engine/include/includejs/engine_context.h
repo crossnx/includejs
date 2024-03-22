@@ -30,6 +30,7 @@ public:
   auto from(double value) const -> Value;
   auto from(bool value) const -> Value;
   auto from(std::nullptr_t value) const -> Value;
+  auto from_json(const std::string &json_string) const -> Value;
   auto global() const -> Value;
 
 private:
