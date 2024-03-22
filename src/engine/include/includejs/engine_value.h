@@ -64,6 +64,7 @@ public:
   auto push(Value value) -> void;
   auto to_map() const -> std::map<std::string, Value>;
   auto to_vector() const -> std::vector<Value>;
+  auto to_json_string() const -> std::string;
 
   // For internal use only
 #ifndef DOXYGEN
