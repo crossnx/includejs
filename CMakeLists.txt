@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Options
 set(INCLUDEJS_BACKEND "JavaScriptCore" CACHE STRING "The IncludeJS Engine backend")
+set(INCLUDEJS_BACKEND_JAVASCRIPTCORE_API_VERSION "" CACHE STRING "Build IncludeJS against a specific version of JavaScriptCore (empty means no preference)")
 option(INCLUDEJS_ENGINE "Build the IncludeJS engine library" ON)
 option(INCLUDEJS_TESTS "Build the IncludeJS tests" OFF)
 option(INCLUDEJS_DOCS "Build the IncludeJS docs" OFF)
