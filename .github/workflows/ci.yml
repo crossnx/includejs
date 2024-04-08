@@ -46,6 +46,11 @@ jobs:
             cxx: g++
             type: shared
             backend: JavaScriptCore
+          - os: windows-latest
+            cc: gcc
+            cxx: g++
+            type: static
+            backend: V8
 
           # Sanitizers
           - os: ubuntu-latest

@@ -2,8 +2,22 @@
 
 #include <iostream>
 
-#include <libplatform/libplatform.h>
+// This ignores the compiler warnings that get produced by the MSVC compiler
+// while including the v8.h header file.
+#if defined(_MSC_VER)
+#pragma warning(push)
+// warning C4100: '...': unreferenced formal parameter
+#pragma warning(disable : 4100)
+// warning C4127: conditional expression is constant
+#pragma warning(disable : 4127)
+// warning C4458: declaration of 'identifier' hides class member
+#pragma warning(disable : 4458)
+#endif
 #include <v8.h>
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+#include <libplatform/libplatform.h>
 
 namespace includejs {
 
