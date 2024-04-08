@@ -34,8 +34,8 @@ static auto js_string_to_std_string(JSStringRef value) -> std::string {
 
 // Converting a value into a string first requires copying
 // the value reference into a string reference.
-static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
-    -> std::string {
+static auto js_value_to_std_string(JSContextRef context,
+                                   JSValueRef value) -> std::string {
   JSValueRef exception = nullptr;
   JSStringRef copy = JSValueToStringCopy(context, value, &exception);
   assert(!exception);
@@ -50,8 +50,8 @@ static auto js_value_to_std_string(JSContextRef context, JSValueRef value)
   }
 }
 
-static auto get_current_object(JSContextRef context, JSValueRef value)
-    -> JSObjectRef {
+static auto get_current_object(JSContextRef context,
+                               JSValueRef value) -> JSObjectRef {
   JSValueRef exception = nullptr;
   JSObjectRef object = JSValueToObject(context, value, &exception);
   assert(!exception);
@@ -59,8 +59,8 @@ static auto get_current_object(JSContextRef context, JSValueRef value)
   return object;
 }
 
-static auto get_object_length(JSContextRef context, JSObjectRef object)
-    -> std::size_t {
+static auto get_object_length(JSContextRef context,
+                              JSObjectRef object) -> std::size_t {
   JSValueRef exception = nullptr;
   JSStringRef length_string = JSStringCreateWithUTF8CString("length");
   const double length = JSValueToNumber(
@@ -321,8 +321,8 @@ auto Value::set(const std::string &name, Function cpp_function) -> void {
   JSStringRelease(function_name_ref);
 }
 
-auto Value::private_data(void *data, std::function<void(void *)> deleter)
-    -> void {
+auto Value::private_data(void *data,
+                         std::function<void(void *)> deleter) -> void {
   assert(is_object());
 
   // Get the parent object

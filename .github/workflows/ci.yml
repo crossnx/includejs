@@ -82,7 +82,7 @@ jobs:
         if: runner.os == 'linux'
         run: |
           sudo apt-get update --yes
-          sudo apt-get install --yes clang-format libjavascriptcoregtk-4.0-dev
+          sudo apt-get install --yes libjavascriptcoregtk-4.0-dev
 
       # See https://github.com/actions/runner-images/issues/8659
       - name: Workaround Clang issue (GNU/Linux)
@@ -98,6 +98,8 @@ jobs:
         env:
           HOMEBREW_NO_ANALYTICS: 1
           HOMEBREW_NO_AUTO_UPDATE: 1
+      - name: Install ClangFormat
+        run: pip install clang-format==18.1.0
       - run: cmake --version
       - name: Configure IncludeJS (static)
         if: matrix.platform.type == 'static'

@@ -144,8 +144,8 @@ auto Engine::bind_global(std::initializer_list<std::string> location,
   }
 }
 
-auto Engine::bind_global(std::initializer_list<std::string> location, int value)
-    -> void {
+auto Engine::bind_global(std::initializer_list<std::string> location,
+                         int value) -> void {
   JSValueRef exception = nullptr;
   JSValueRef js_value =
       JSValueMakeNumber(this->internal->context, static_cast<double>(value));

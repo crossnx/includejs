@@ -17,8 +17,8 @@ struct INCLUDEJS_ENGINE_EXPORT PrivateObjectData {
   ~PrivateObjectData();
 
   auto data() -> void *;
-  auto set_data(void *new_data, std::function<void(void *)> new_deleter)
-      -> void;
+  auto set_data(void *new_data,
+                std::function<void(void *)> new_deleter) -> void;
 
 private:
   void *data_ = nullptr;
