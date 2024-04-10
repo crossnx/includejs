@@ -13,8 +13,8 @@
 namespace includejs {
 
 // For convenience
-auto Engine::evaluate(std::ifstream &stream, const std::filesystem::path &path)
-    -> Value {
+auto Engine::evaluate(std::ifstream &stream,
+                      const std::filesystem::path &path) -> Value {
   stream.exceptions(std::ios_base::badbit);
   std::string line;
   std::ostringstream result;

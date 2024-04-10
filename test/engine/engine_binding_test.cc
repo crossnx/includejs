@@ -8,15 +8,15 @@ static auto is_string(const includejs::Context &context,
 }
 
 // TODO: Add overload that doesn't take arguments
-static auto get_details(const includejs::Context &context, INCLUDEJS_ARGS)
-    -> includejs::Value {
+static auto get_details(const includejs::Context &context,
+                        INCLUDEJS_ARGS) -> includejs::Value {
   includejs::Value result{context.make_object()};
   result.set("version", context.from("1.0.0"));
   return result;
 }
 
-static auto promise_test(const includejs::Context &context, INCLUDEJS_ARGS)
-    -> includejs::Value {
+static auto promise_test(const includejs::Context &context,
+                         INCLUDEJS_ARGS) -> includejs::Value {
   includejs::Promise promise{context.make_promise()};
   promise.resolve(context.from(true));
   return promise.value();
