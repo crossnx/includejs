@@ -5,7 +5,7 @@ CTEST = ctest
 # Options
 PRESET = Debug
 SHARED = OFF
-BACKEND = JavaScriptCore
+BACKEND ?= JavaScriptCore
 
 all: configure compile test
 
@@ -17,7 +17,8 @@ configure: .always
 		-DINCLUDEJS_ENGINE:BOOL=ON \
 		-DINCLUDEJS_TESTS:BOOL=ON \
 		-DINCLUDEJS_DOCS:BOOL=ON \
-		-DBUILD_SHARED_LIBS:BOOL=$(SHARED)
+		-DBUILD_SHARED_LIBS:BOOL=$(SHARED) \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
 compile: .always
 	$(CMAKE) --build ./build --config $(PRESET) --target clang_format
