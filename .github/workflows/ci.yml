@@ -82,7 +82,7 @@ jobs:
         if: runner.os == 'linux'
         run: |
           sudo apt-get update --yes
-          sudo apt-get install --yes libjavascriptcoregtk-4.0-dev
+          sudo apt-get install --yes libjavascriptcoregtk-4.1-dev
 
       # See https://github.com/actions/runner-images/issues/8659
       - name: Workaround Clang issue (GNU/Linux)
