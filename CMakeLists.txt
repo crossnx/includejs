@@ -7,7 +7,7 @@ include(vendor/noa/cmake/noa.cmake)
 include(cmake/CompilerOptions.cmake)
 
 # C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Options
 set(INCLUDEJS_BACKEND "JavaScriptCore" CACHE STRING "The IncludeJS Engine backend")
