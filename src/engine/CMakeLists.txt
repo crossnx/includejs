@@ -1,3 +1,12 @@
+if(MSVC)
+  # We link to the v8_monolith.lib static library from just-js that is built in
+  # release mode with "RuntimeLibrary" set to "MT_StaticRelease", so we are
+  # adding the /MT compiler option for both the Debug and Release configs on
+  # Windows.
+  # Refs: https://stackoverflow.com/a/60844772
+  add_compile_options(/MT)
+endif()
+
 set(INCLUDEJS_ENGINE_SOURCES
   common/engine.cc
   common/engine_context.cc
